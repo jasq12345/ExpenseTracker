@@ -1,0 +1,156 @@
+<?php
+
+namespace App\Entity;
+
+use App\Enum\TransactionType;
+use App\Repository\TransactionRepository;
+use Doctrine\DBAL\Types\Types;
+use Doctrine\ORM\Mapping as ORM;
+
+#[ORM\Entity(repositoryClass: TransactionRepository::class)]
+class Transaction
+{
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column]
+    private ?int $id = null;
+
+    #[ORM\Column(length: 100)]
+    private string $name;
+
+    #[ORM\ManyToOne(inversedBy: 'transactions')]
+    private ?Category $categoryId = null;
+
+    #[ORM\ManyToOne(inversedBy: 'transactions')]
+    #[ORM\JoinColumn(nullable: false)]
+    private User $userId;
+
+    #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 2)]
+    private float $price;
+
+    #[ORM\Column(type: Types::INTEGER)]
+    private int $amount;
+
+    #[ORM\Column]
+    private \DateTime $date;
+
+    #[ORM\Column]
+    private ?\DateTimeImmutable $createdAt = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $description = null;
+
+    #[ORM\Column(type: Types::STRING, enumType: TransactionType::class)]
+    private ?TransactionType $type = TransactionType::EXPENSE;
+    public function getId(): ?int
+    {
+        return $this->id;
+    }
+
+    public function getName(): string
+    {
+        return $this->name;
+    }
+
+    public function setName(string $name): static
+    {
+        $this->name = $name;
+
+        return $this;
+    }
+
+    public function getCategoryId(): ?Category
+    {
+        return $this->categoryId;
+    }
+
+    public function setCategoryId(?Category $categoryId): static
+    {
+        $this->categoryId = $categoryId;
+
+        return $this;
+    }
+
+    public function getUserId(): User
+    {
+        return $this->userId;
+    }
+
+    public function setUserId(User $userId): static
+    {
+        $this->userId = $userId;
+
+        return $this;
+    }
+
+    public function getPrice(): float
+    {
+        return $this->price;
+    }
+
+    public function setPrice(float $price): static
+    {
+        $this->price = $price;
+
+        return $this;
+    }
+
+    public function getAmount(): int
+    {
+        return $this->amount;
+    }
+
+    public function setAmount(int $amount): static
+    {
+        $this->amount = $amount;
+
+        return $this;
+    }
+
+    public function getDate(): \DateTime
+    {
+        return $this->date;
+    }
+
+    public function setDate(\DateTime $date): static
+    {
+        $this->date = $date;
+
+        return $this;
+    }
+
+    public function getCreatedAt(): ?\DateTimeImmutable
+    {
+        return $this->createdAt;
+    }
+
+    public function setCreatedAt(\DateTimeImmutable $createdAt): static
+    {
+        $this->createdAt = $createdAt;
+
+        return $this;
+    }
+
+    public function getDescription(): ?string
+    {
+        return $this->description;
+    }
+
+    public function setDescription(?string $description): static
+    {
+        $this->description = $description;
+
+        return $this;
+    }
+
+    public function getType(): ?TransactionType
+    {
+        return $this->type;
+    }
+
+    public function setType(TransactionType $type): self
+    {
+        $this->type = $type;
+        return $this;
+    }
+}

@@ -19,11 +19,11 @@ class Transaction
     private string $name;
 
     #[ORM\ManyToOne(inversedBy: 'transactions')]
-    private ?Category $categoryId = null;
+    private ?Category $category = null;
 
     #[ORM\ManyToOne(inversedBy: 'transactions')]
     #[ORM\JoinColumn(nullable: false)]
-    private User $userId;
+    private User $user;
 
     #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 2)]
     private float $price;
@@ -59,26 +59,26 @@ class Transaction
         return $this;
     }
 
-    public function getCategoryId(): ?Category
+    public function getCategory(): ?Category
     {
-        return $this->categoryId;
+        return $this->category;
     }
 
-    public function setCategoryId(?Category $categoryId): static
+    public function setCategory(?Category $category): static
     {
-        $this->categoryId = $categoryId;
+        $this->category = $category;
 
         return $this;
     }
 
-    public function getUserId(): User
+    public function getUser(): User
     {
-        return $this->userId;
+        return $this->user;
     }
 
-    public function setUserId(User $userId): static
+    public function setUser(User $user): static
     {
-        $this->userId = $userId;
+        $this->user = $user;
 
         return $this;
     }

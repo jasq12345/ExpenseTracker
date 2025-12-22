@@ -96,7 +96,7 @@ class User
     {
         if (!$this->categories->contains($category)) {
             $this->categories->add($category);
-            $category->setUserId($this);
+            $category->setUser($this);
         }
 
         return $this;
@@ -106,8 +106,8 @@ class User
     {
         if ($this->categories->removeElement($category)) {
             // set the owning side to null (unless already changed)
-            if ($category->getUserId() === $this) {
-                $category->setUserId(null);
+            if ($category->getUser() === $this) {
+                $category->setUser(null);
             }
         }
 
@@ -126,7 +126,7 @@ class User
     {
         if (!$this->transactions->contains($transaction)) {
             $this->transactions->add($transaction);
-            $transaction->setUserId($this);
+            $transaction->setUser($this);
         }
 
         return $this;

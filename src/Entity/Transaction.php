@@ -19,14 +19,15 @@ class Transaction
     private string $name;
 
     #[ORM\ManyToOne(inversedBy: 'transactions')]
+    #[ORM\JoinColumn(name:'category_id')]
     private ?Category $category = null;
 
     #[ORM\ManyToOne(inversedBy: 'transactions')]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(name:'user_id', nullable: false)]
     private User $user;
 
     #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 2)]
-    private float $price;
+    private string $price;
 
     #[ORM\Column(type: Types::INTEGER)]
     private int $amount;

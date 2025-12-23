@@ -19,7 +19,7 @@ class Category
     private string $name;
 
     #[ORM\ManyToOne(inversedBy: 'categories')]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(name:'user_id', nullable: false)]
     private User $user;
 
     #[ORM\Column(length: 7, nullable: true)]

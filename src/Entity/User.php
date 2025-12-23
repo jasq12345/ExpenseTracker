@@ -28,13 +28,13 @@ class User
     /**
      * @var Collection<int, Category>
      */
-    #[ORM\OneToMany(targetEntity: Category::class, mappedBy: 'userId', orphanRemoval: true)]
+    #[ORM\OneToMany(targetEntity: Category::class, mappedBy: 'user', orphanRemoval: true)]
     private Collection $categories;
 
     /**
      * @var Collection<int, Transaction>
      */
-    #[ORM\OneToMany(targetEntity: Transaction::class, mappedBy: 'userId', cascade: ['remove'])]
+    #[ORM\OneToMany(targetEntity: Transaction::class, mappedBy: 'user', cascade: ['remove'])]
     private Collection $transactions;
 
     public function __construct()
@@ -104,13 +104,7 @@ class User
 
     public function removeCategory(Category $category): static
     {
-        if ($this->categories->removeElement($category)) {
-            // set the owning side to null (unless already changed)
-            if ($category->getUser() === $this) {
-                $category->setUser(null);
-            }
-        }
-
+        $this->categories->removeElement($category);
         return $this;
     }
 

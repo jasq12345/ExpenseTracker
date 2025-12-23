@@ -19,8 +19,8 @@ class Category
     private string $name;
 
     #[ORM\ManyToOne(inversedBy: 'categories')]
-    #[ORM\JoinColumn(nullable: false)]
-    private User $userId;
+    #[ORM\JoinColumn(name:'user_id', nullable: false)]
+    private User $user;
 
     #[ORM\Column(length: 7, nullable: true)]
     private ?string $color = null;
@@ -56,14 +56,14 @@ class Category
         return $this;
     }
 
-    public function getUserId(): User
+    public function getUser(): User
     {
-        return $this->userId;
+        return $this->user;
     }
 
-    public function setUserId(User $userId): static
+    public function setUser(User $user): static
     {
-        $this->userId = $userId;
+        $this->user = $user;
 
         return $this;
     }
@@ -104,7 +104,7 @@ class Category
     {
         if (!$this->transactions->contains($transaction)) {
             $this->transactions->add($transaction);
-            $transaction->setCategoryId($this);
+            $transaction->setCategory($this);
         }
 
         return $this;
@@ -113,8 +113,8 @@ class Category
     public function removeTransaction(Transaction $transaction): static
     {
         if ($this->transactions->removeElement($transaction)) {
-            if ($transaction->getCategoryId() === $this) {
-                $transaction->setCategoryId(null);
+            if ($transaction->getCategory() === $this) {
+                $transaction->setCategory(null);
             }
         }
 

@@ -16,11 +16,11 @@ class Category
     private ?int $id = null;
 
     #[ORM\Column(length: 100)]
-    private string $name;
+    private ?string $name = null;
 
     #[ORM\ManyToOne(inversedBy: 'categories')]
     #[ORM\JoinColumn(name:'user_id', nullable: false)]
-    private User $user;
+    private ?User $user = null;
 
     #[ORM\Column(length: 7, nullable: true)]
     private ?string $color = null;
@@ -34,9 +34,14 @@ class Category
     #[ORM\OneToMany(targetEntity: Transaction::class, mappedBy: 'category')]
     private Collection $transactions;
 
-    public function __construct()
+
+    public function __construct(array $data = [])
     {
         $this->transactions = new ArrayCollection();
+        $this->name = $data['name'] ?? $this->name;
+        $this->user = $data['user'] ?? $this->user;
+        $this->color = $data['color'] ?? $this->color;
+        $this->icon = $data['icon'] ?? $this->icon;
     }
 
     public function getId(): ?int

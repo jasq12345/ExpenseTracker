@@ -17,13 +17,14 @@ final class TransactionController extends AbstractController
     public function getAllTransactions(TransactionRepository $transactionRepository): JsonResponse
     {
         $transactions = $transactionRepository->findAll();
+
         return $this->json($transactions);
     }
 
     #[Route('/api/transaction/{id}', name: 'app_transaction_get', methods: ['GET'])]
     public function getTransaction(string $id, TransactionRepository $transactionRepository): JsonResponse
     {
-        $transaction = $transactionRepository->findOneBy(['id' => $id]);
+        $transaction = $transactionRepository->find($id);
         if (!$transaction) {
             return $this->json(['error' => 'Transaction not found'], 404);
         }
@@ -67,6 +68,6 @@ final class TransactionController extends AbstractController
             return $this->json(['error' => 'Failed to save transaction'], 500);
         }
 
-        return $this->json(['success' => true, 'id' => $transaction->getId()]);
+        return $this->json(['success' => true]);
     }
 }

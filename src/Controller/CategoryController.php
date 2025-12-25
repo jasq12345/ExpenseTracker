@@ -4,7 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Category;
 use App\Repository\CategoryRepository;
-use App\Service\PostRequestValidator;
+use App\Service\Validation\PostRequestAppValidator;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -12,9 +12,9 @@ use Symfony\Component\Routing\Attribute\Route;
 
 final class CategoryController extends GenericApiController
 {
-    public function __construct(CategoryRepository $categoryRepository, EntityManagerInterface $entityManager)
+    public function __construct(CategoryRepository $categoryRepository, EntityManagerInterface $entityManager, PostRequestAppValidator $validator)
     {
-        parent::__construct(Category::class, $categoryRepository, $entityManager);
+        parent::__construct(Category::class, $categoryRepository, $entityManager, $validator);
     }
     #[Route('/api/category', name: 'app_categories', methods: ["GET"])]
     public function getAllCategories(): JsonResponse
@@ -35,9 +35,8 @@ final class CategoryController extends GenericApiController
     }
 
     #[Route("/api/category/", name: "app_category_post", methods: ["POST"])]
-    public function newCategory(Request $request, PostRequestValidator $validation): JsonResponse
+    public function newCategory(Request $request): JsonResponse
     {
-        return parent::newEntity($request, $validation);
+        return parent::newEntity($request);
     }
 }
-

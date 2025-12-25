@@ -2,9 +2,11 @@
 
 namespace App\Controller;
 
-use App\Service\PostRequestValidator;
+use App\Service\Validation\AppValidatorInterface;
+use App\Service\Validation\UserValidator;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityRepository;
+use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -14,11 +16,15 @@ abstract class GenericApiController extends AbstractController
 {
     protected string $entityClass;
     protected EntityRepository $repository;
+    protected AppValidatorInterface $validator;
 
-    public function __construct(string $entityClass, EntityRepository $repository, private readonly EntityManagerInterface $entityManager)
+    public function __construct(string $entityClass, EntityRepository $repository,
+                                private readonly EntityManagerInterface $entityManager,
+                                AppValidatorInterface $validator)
     {
         $this->entityClass = $entityClass;
         $this->repository = $repository;
+        $this->validator = $validator;
     }
 
     #[Route("/api/{entity}", name: "app_entities", methods: ["GET"])]
@@ -49,7 +55,7 @@ abstract class GenericApiController extends AbstractController
         try {
             $this->entityManager->remove($entity);
             $this->entityManager->flush();
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return $this->json(['error' => $e->getMessage()], 500);
         }
 
@@ -57,21 +63,26 @@ abstract class GenericApiController extends AbstractController
     }
 
     #[Route('/api/{entity}', name: 'app_entity_post', methods: ['POST'])]
-    public function newEntity(Request $request, PostRequestValidator $validation): JsonResponse
+    public function newEntity(Request $request): JsonResponse
     {
         $data = json_decode($request->getContent(), true);
 
-        $errors = $validation->validateData($data);
+        $entity = new $this->entityClass($data);
+
+        if($this->validator instanceof UserValidator && isset($data['password'])){
+            $hashedPassword = $this->validator->hashPassword($data['password'], $entity);
+            $entity->setPassword($hashedPassword);
+        }
+
+        $errors = $this->validator->validateData($entity);
         if (!empty($errors)) {
             return $this->json(['errors' => $errors], 400);
         }
 
-        $entity = new $this->entityClass($data);
-
         try {
             $this->entityManager->persist($entity);
             $this->entityManager->flush();
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return $this->json(['error' => 'Failed to save transaction'], 500);
         }
 

@@ -4,7 +4,8 @@ namespace App\Controller;
 
 use App\Entity\User;
 use App\Repository\UserRepository;
-use App\Service\PostRequestValidator;
+use App\Service\Validation\PostRequestAppValidator;
+use App\Service\Validation\UserValidator;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -12,9 +13,9 @@ use Symfony\Component\Routing\Attribute\Route;
 
 class UserController extends GenericApiController
 {
-    public function __construct(UserRepository $categoryRepository, EntityManagerInterface $entityManager)
+    public function __construct(UserRepository $categoryRepository, EntityManagerInterface $entityManager, UserValidator $validator)
     {
-        parent::__construct(User::class, $categoryRepository, $entityManager);
+        parent::__construct(User::class, $categoryRepository, $entityManager, $validator);
     }
     #[Route("/api/users", name: "app_users", methods: ["GET"])]
     public function getAllUsers(): JsonResponse
@@ -34,7 +35,7 @@ class UserController extends GenericApiController
         return parent::deleteEntity($id);
     }
 
-    public function newUser(Request $request, PostRequestValidator $validation): JsonResponse
+    public function newUser(Request $request, PostRequestAppValidator $validation): JsonResponse
     {
         return parent::newEntity($request, $validation);
     }

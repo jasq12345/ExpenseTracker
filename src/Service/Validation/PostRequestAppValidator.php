@@ -1,14 +1,13 @@
 <?php
 
-namespace App\Service;
-
+namespace App\Service\Validation;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
-readonly class PostRequestValidator
+readonly class PostRequestAppValidator implements AppValidatorInterface
 {
     public function __construct(private ValidatorInterface $validator){}
 
-    public function validateData(array $data): array
+    public function validateData($data): array
     {
         $errors = $this->validator->validate($data);
         if (count($errors) > 0) {

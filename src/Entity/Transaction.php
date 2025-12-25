@@ -16,7 +16,7 @@ class Transaction
     private ?int $id = null;
 
     #[ORM\Column(length: 100)]
-    private string $name;
+    private ?string $name = null;
 
     #[ORM\ManyToOne(inversedBy: 'transactions')]
     #[ORM\JoinColumn(name:'category_id')]
@@ -24,16 +24,16 @@ class Transaction
 
     #[ORM\ManyToOne(inversedBy: 'transactions')]
     #[ORM\JoinColumn(name:'user_id', nullable: false)]
-    private User $user;
+    private ?User $user = null;
 
     #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 2)]
-    private string $price;
+    private ?string $price = null;
 
     #[ORM\Column(type: Types::INTEGER)]
-    private int $amount;
+    private ?int $amount = null;
 
     #[ORM\Column]
-    private \DateTime $date;
+    private ?\DateTime $date = null;
 
     #[ORM\Column]
     private ?\DateTimeImmutable $createdAt = null;
@@ -43,6 +43,20 @@ class Transaction
 
     #[ORM\Column(type: Types::STRING, enumType: TransactionType::class)]
     private ?TransactionType $type = TransactionType::EXPENSE;
+
+    public function __construct(array $data = [])
+    {
+        $this->name = $data['name'] ?? $this->name;
+        $this->category = $data['category'] ?? $this->category;
+        $this->user = $data['user'] ?? $this->user;
+        $this->price = $data['price'] ?? $this->price;
+        $this->amount = $data['amount'] ?? $this->amount;
+        $this->date = $data['date'] ?? $this->date;
+        $this->description = $data['description'] ?? $this->description;
+        $this->type = $data['type'] ?? $this->type;
+    }
+
+
     public function getId(): ?int
     {
         return $this->id;

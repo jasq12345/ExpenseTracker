@@ -17,13 +17,13 @@ class User
     private ?int $id = null;
 
     #[ORM\Column(length: 50)]
-    private string $username;
+    private ?string $username = null;
 
     #[ORM\Column(length: 50)]
-    private string $email;
+    private ?string $email = null;
 
     #[ORM\Column(length: 255)]
-    private string $password;
+    private ?string $password = null;
 
     /**
      * @var Collection<int, Category>
@@ -37,10 +37,14 @@ class User
     #[ORM\OneToMany(targetEntity: Transaction::class, mappedBy: 'user', cascade: ['remove'])]
     private Collection $transactions;
 
-    public function __construct()
+    public function __construct(array $data = [])
     {
         $this->categories = new ArrayCollection();
         $this->transactions = new ArrayCollection();
+        $this->username = $data['username'] ?? $this->username;
+        $this->email = $data['email'] ?? $this->email;
+        $this->password = $data['password'] ?? $this->password;
+
     }
 
     public function getId(): ?int

@@ -4,7 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Transaction;
 use App\Repository\TransactionRepository;
-use App\Service\TransactionDataValidation;
+use App\Service\PostRequestValidator;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -22,7 +22,7 @@ final class TransactionController extends AbstractController
     }
 
     #[Route('/api/transaction/{id}', name: 'app_transaction_get', methods: ['GET'])]
-    public function getTransaction(string $id, TransactionRepository $transactionRepository): JsonResponse
+    public function getOneTransaction(string $id, TransactionRepository $transactionRepository): JsonResponse
     {
         $transaction = $transactionRepository->find($id);
         if (!$transaction) {
@@ -50,7 +50,7 @@ final class TransactionController extends AbstractController
     }
 
     #[Route('/api/transaction', name: 'app_transaction_post', methods: ['POST'])]
-    public function newTransaction(Request $request, EntityManagerInterface $entityManager, TransactionDataValidation $validation): JsonResponse
+    public function newTransaction(Request $request, EntityManagerInterface $entityManager, PostRequestValidator $validation): JsonResponse
     {
         $data = json_decode($request->getContent(), true);
 

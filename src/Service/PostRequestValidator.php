@@ -2,13 +2,12 @@
 
 namespace App\Service;
 
-use App\Repository\TransactionRepository;
-use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
-readonly class TransactionDataValidation
+readonly class PostRequestValidator
 {
     public function __construct(private ValidatorInterface $validator){}
+
     public function validateData(array $data): array
     {
         $errors = $this->validator->validate($data);

@@ -4,7 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Category;
 use App\Repository\CategoryRepository;
-use App\Service\CategoryDataValidation;
+use App\Service\PostRequestValidator;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -21,7 +21,7 @@ final class CategoryController extends AbstractController
     }
 
     #[Route('/api/category/{id}', name: 'app_category_get', methods: ["GET"])]
-    public function getCategory(string $id, CategoryRepository $categoryRepository): JsonResponse
+    public function getOneCategory(string $id, CategoryRepository $categoryRepository): JsonResponse
     {
         $category = $categoryRepository->find($id);
         if (!$category) {
@@ -48,7 +48,7 @@ final class CategoryController extends AbstractController
     }
 
     #[Route("/api/category/", name: "app_category_post", methods: ["POST"])]
-    public function newCategory(Request $request, CategoryDataValidation $validation, EntityManagerInterface $entityManager): JsonResponse
+    public function newCategory(Request $request, PostRequestValidator $validation, EntityManagerInterface $entityManager): JsonResponse
     {
         $data = json_decode($request->getContent(), true);
 

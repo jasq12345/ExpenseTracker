@@ -1,48 +1,39 @@
 services:
+  php:
+    image: php:8.4-fpm
+    container_name: php
+    volumes:
+      - ./:/var/www/html
+    depends_on:
+      - mysql
+
+  nginx:
+    image: nginx:alpine
+    container_name: nginx
+    volumes:
+      - ./:/var/www/html
+    ports:
+      - "8080:80"
+    depends_on:
+      - php
+
   mysql:
     image: mysql:8.0
     container_name: mysql
-    restart: unless-stopped
     environment:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: app
       MYSQL_USER: app
       MYSQL_PASSWORD: password
-    volumes:
-      - mysql_data:/var/lib/mysql
     ports:
       - "3306:3306"
 
   phpmyadmin:
     image: phpmyadmin:latest
     container_name: phpmyadmin
-    restart: unless-stopped
     environment:
       PMA_HOST: mysql
       PMA_USER: root
       PMA_PASSWORD: root
     ports:
-      - "8080:80"
-    depends_on:
-      - mysql
-
-  apache:
-    image: php:8.4-apache
-    container_name: apache2
-    restart: unless-stopped
-    volumes:
-      - "./:/var/www/html"
-    ports:
-      - "80:80"
-    depends_on:
-      - mysql
-    environment:
-      APACHE_DOCUMENT_ROOT: /var/www/html/public
-    command: >
-      sh -c "docker-php-ext-install pdo_mysql mysqli &&
-             a2enmod rewrite &&
-             echo 'ServerName localhost' >> /etc/apache2/apache2.conf &&
-             apache2-foreground"
-
-volumes:
-  mysql_data:
+      - "8081:80"

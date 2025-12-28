@@ -4,19 +4,19 @@ namespace App\Controller;
 
 use App\Entity\Category;
 use App\Repository\CategoryRepository;
-use App\Service\Validation\PostRequestAppValidator;
-use Doctrine\ORM\EntityManagerInterface;
+use App\Service\EntityFacade;
+use App\Service\Factory\ApiErrorResponseFactory;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 
 final class CategoryController extends GenericApiController
 {
-    public function __construct(CategoryRepository $categoryRepository, EntityManagerInterface $entityManager, PostRequestAppValidator $validator)
+    public function __construct(CategoryRepository $categoryRepository, EntityFacade $facade, ApiErrorResponseFactory $errorResponseFactory)
     {
-        parent::__construct(Category::class, $categoryRepository, $entityManager, $validator);
+        parent::__construct(Category::class, $categoryRepository, $facade, $errorResponseFactory);
     }
-    #[Route('/api/category', name: 'app_categories', methods: ["GET"])]
+    #[Route('/api/categories', name: 'app_categories', methods: ["GET"])]
     public function getAllCategories(): JsonResponse
     {
         return parent::getAllEntities();
@@ -38,5 +38,11 @@ final class CategoryController extends GenericApiController
     public function newCategory(Request $request): JsonResponse
     {
         return parent::newEntity($request);
+    }
+
+    #[Route("/api/category/{id}", name: "app_category_put", methods: ["PUT", "PATCH"])]
+    public function updateCategory(Request $request, int $id): JsonResponse
+    {
+        return parent::updateEntity($request, $id);
     }
 }

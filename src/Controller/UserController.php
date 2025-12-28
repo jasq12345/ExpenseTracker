@@ -4,18 +4,17 @@ namespace App\Controller;
 
 use App\Entity\User;
 use App\Repository\UserRepository;
-use App\Service\Validation\PostRequestAppValidator;
-use App\Service\Validation\UserValidator;
-use Doctrine\ORM\EntityManagerInterface;
+use App\Service\EntityFacade;
+use App\Service\Factory\ApiErrorResponseFactory;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 
 class UserController extends GenericApiController
 {
-    public function __construct(UserRepository $categoryRepository, EntityManagerInterface $entityManager, UserValidator $validator)
+    public function __construct(UserRepository $categoryRepository, EntityFacade $facade, ApiErrorResponseFactory $errorResponseFactory)
     {
-        parent::__construct(User::class, $categoryRepository, $entityManager, $validator);
+        parent::__construct(User::class, $categoryRepository, $facade, $errorResponseFactory);
     }
     #[Route("/api/users", name: "app_users", methods: ["GET"])]
     public function getAllUsers(): JsonResponse
@@ -35,8 +34,15 @@ class UserController extends GenericApiController
         return parent::deleteEntity($id);
     }
 
-    public function newUser(Request $request, PostRequestAppValidator $validation): JsonResponse
+    #[Route("/api/user", name: "app_user_post", methods: ["POST"])]
+    public function newUser(Request $request): JsonResponse
     {
-        return parent::newEntity($request, $validation);
+        return parent::newEntity($request);
+    }
+
+    #[Route("/api/user/{id}", name: "app_user_put", methods: ["PUT", "PATCH"])]
+    public function updateUser(Request $request, int $id): JsonResponse
+    {
+        return parent::updateEntity($request, $id);
     }
 }

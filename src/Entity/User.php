@@ -38,14 +38,10 @@ class User implements PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(targetEntity: Transaction::class, mappedBy: 'user', cascade: ['remove'])]
     private Collection $transactions;
 
-    public function __construct(array $data = [])
+    public function __construct()
     {
         $this->categories = new ArrayCollection();
         $this->transactions = new ArrayCollection();
-        $this->username = $data['username'] ?? $this->username;
-        $this->email = $data['email'] ?? $this->email;
-        $this->password = $data['password'] ?? $this->password;
-
     }
 
     public function getId(): ?int

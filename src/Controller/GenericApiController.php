@@ -2,91 +2,99 @@
 
 namespace App\Controller;
 
-use App\Service\Validation\AppValidatorInterface;
-use App\Service\Validation\UserValidator;
-use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\ORM\EntityRepository;
+use App\Service\EntityFacade;
+use App\Service\Factory\ApiErrorResponseFactory;
+use Doctrine\Persistence\ObjectRepository;
 use Exception;
+use InvalidArgumentException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Routing\Attribute\Route;
 
 abstract class GenericApiController extends AbstractController
 {
-    protected string $entityClass;
-    protected EntityRepository $repository;
-    protected AppValidatorInterface $validator;
-
-    public function __construct(string $entityClass, EntityRepository $repository,
-                                private readonly EntityManagerInterface $entityManager,
-                                AppValidatorInterface $validator)
+    public function __construct(
+        protected string $entityClass,
+        protected ObjectRepository $repository,
+        protected EntityFacade $facade,
+        protected ApiErrorResponseFactory $errorResponseFactory
+    ) {}
+    protected function getAllEntities(): JsonResponse
     {
-        $this->entityClass = $entityClass;
-        $this->repository = $repository;
-        $this->validator = $validator;
-    }
-
-    #[Route("/api/{entity}", name: "app_entities", methods: ["GET"])]
-    public function getAllEntities(): JsonResponse
-    {
-        $entities = $this->repository->findAll();
+        $entities = $this->repository->findBy([], null, 50);
         return $this->json($entities);
     }
 
-    #[Route("/api/{entity}/{id}", name: "app_entity_get", methods: ["GET"])]
-    public function getOneEntity(int $id): JsonResponse
+    protected function getOneEntity(int $id): JsonResponse
     {
         $entity = $this->repository->find($id);
         if (!$entity) {
-            return $this->json(["error" => "Entity not found"], 404);
+            return $this->errorResponseFactory->notFound($this->facade->getEntityName($this->entityClass));
         }
         return $this->json($entity);
     }
 
-    #[Route('/api/{entity}/{id}', name: 'app_entity_delete', methods: ['DELETE'])]
-    public function deleteEntity(int $id): JsonResponse
+    protected function deleteEntity(int $id): JsonResponse
     {
         $entity = $this->repository->find($id);
         if (!$entity) {
-            return $this->json(['error' => 'Transaction not found'], 404);
+            return $this->errorResponseFactory->notFound($this->facade->getEntityName($this->entityClass));
         }
 
         try {
-            $this->entityManager->remove($entity);
-            $this->entityManager->flush();
-        } catch (Exception $e) {
-            return $this->json(['error' => $e->getMessage()], 500);
+            $this->facade->delete($entity);
+        } catch (Exception) {
+            return $this->errorResponseFactory->notSaved($this->facade->getEntityName($entity));
         }
 
-        return $this->json(['success' => true]);
+        return $this->errorResponseFactory->success();
     }
 
-    #[Route('/api/{entity}', name: 'app_entity_post', methods: ['POST'])]
-    public function newEntity(Request $request): JsonResponse
+    protected function newEntity(Request $request): JsonResponse
     {
-        $data = json_decode($request->getContent(), true);
+        $entity = $this->facade->create($this->entityClass);
 
-        $entity = new $this->entityClass($data);
-
-        if($this->validator instanceof UserValidator && isset($data['password'])){
-            $hashedPassword = $this->validator->hashPassword($data['password'], $entity);
-            $entity->setPassword($hashedPassword);
-        }
-
-        $errors = $this->validator->validateData($entity);
-        if (!empty($errors)) {
-            return $this->json(['errors' => $errors], 400);
+        try {
+            $errors = $this->facade->decodeAndMutate($request, $entity);
+            if (!empty($errors)) {
+                return $this->errorResponseFactory->validation($errors);
+            }
+        } catch (InvalidArgumentException) {
+            return $this->errorResponseFactory->invalidJson();
         }
 
         try {
-            $this->entityManager->persist($entity);
-            $this->entityManager->flush();
-        } catch (Exception $e) {
-            return $this->json(['error' => 'Failed to save transaction'], 500);
+            $this->facade->persist($entity);
+        } catch (Exception) {
+            return $this->errorResponseFactory->notSaved($this->facade->getEntityName($entity));
         }
 
-        return $this->json(['success' => true]);
+        return $this->errorResponseFactory->success();
+    }
+
+    protected function updateEntity(Request $request, int $id): JsonResponse
+    {
+        $entity = $this->repository->find($id);
+        if (!$entity) {
+            return $this->errorResponseFactory->notFound($this->facade->getEntityName($this->entityClass));
+        }
+
+        try {
+            $errors = $this->facade->decodeAndMutate($request, $entity);
+            if (!empty($errors)) {
+                return $this->errorResponseFactory->validation($errors);
+            }
+        } catch (InvalidArgumentException) {
+            return $this->errorResponseFactory->invalidJson();
+        }
+
+        try {
+            $this->facade->flush();
+        } catch (Exception) {
+            return $this->errorResponseFactory->notSaved($this->facade->getEntityName($entity));
+        }
+
+        return $this->errorResponseFactory->success();
     }
 }
 

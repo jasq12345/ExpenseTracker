@@ -44,19 +44,6 @@ class Transaction
     #[ORM\Column(type: Types::STRING, enumType: TransactionType::class)]
     private ?TransactionType $type = TransactionType::EXPENSE;
 
-    public function __construct(array $data = [])
-    {
-        $this->name = $data['name'] ?? $this->name;
-        $this->category = $data['category'] ?? $this->category;
-        $this->user = $data['user'] ?? $this->user;
-        $this->price = $data['price'] ?? $this->price;
-        $this->amount = $data['amount'] ?? $this->amount;
-        $this->date = $data['date'] ?? $this->date;
-        $this->description = $data['description'] ?? $this->description;
-        $this->type = $data['type'] ?? $this->type;
-    }
-
-
     public function getId(): ?int
     {
         return $this->id;

@@ -4,19 +4,19 @@ namespace App\Controller;
 
 use App\Entity\Transaction;
 use App\Repository\TransactionRepository;
-use App\Service\Validation\PostRequestAppValidator;
-use Doctrine\ORM\EntityManagerInterface;
+use App\Service\EntityFacade;
+use App\Service\Factory\ApiErrorResponseFactory;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 
 final class TransactionController extends GenericApiController
 {
-    public function __construct(TransactionRepository $categoryRepository, EntityManagerInterface $entityManager, PostRequestAppValidator $validator)
+    public function __construct(TransactionRepository $categoryRepository, EntityFacade $facade, ApiErrorResponseFactory $errorResponseFactory)
     {
-        parent::__construct(Transaction::class, $categoryRepository, $entityManager, $validator);
+        parent::__construct(Transaction::class, $categoryRepository, $facade, $errorResponseFactory);
     }
-    #[Route('/api/transaction', name: 'app_transactions', methods: ['GET'])]
+    #[Route('/api/transactions', name: 'app_transactions', methods: ['GET'])]
     public function getAllTransactions(): JsonResponse
     {
         return parent::getAllEntities();
@@ -35,8 +35,14 @@ final class TransactionController extends GenericApiController
     }
 
     #[Route('/api/transaction', name: 'app_transaction_post', methods: ['POST'])]
-    public function newTransaction(Request $request, PostRequestAppValidator $validation): JsonResponse
+    public function newTransaction(Request $request): JsonResponse
     {
-        return parent::newEntity($request, $validation);
+        return parent::newEntity($request);
+    }
+
+    #[Route('/api/transaction/{id}', name: 'app_transaction_put', methods: ['PUT', 'PATCH'])]
+    public function updateTransaction(Request $request, int $id): JsonResponse
+    {
+        return parent::updateEntity($request, $id);
     }
 }

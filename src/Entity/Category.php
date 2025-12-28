@@ -34,14 +34,9 @@ class Category
     #[ORM\OneToMany(targetEntity: Transaction::class, mappedBy: 'category')]
     private Collection $transactions;
 
-
-    public function __construct(array $data = [])
+    public function __construct()
     {
         $this->transactions = new ArrayCollection();
-        $this->name = $data['name'] ?? $this->name;
-        $this->user = $data['user'] ?? $this->user;
-        $this->color = $data['color'] ?? $this->color;
-        $this->icon = $data['icon'] ?? $this->icon;
     }
 
     public function getId(): ?int

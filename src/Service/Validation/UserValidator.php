@@ -8,7 +8,7 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 readonly class UserValidator implements AppValidatorInterface
 {
-    public function __construct(private UserPasswordHasherInterface $passwordHasher, private readonly ValidatorInterface $validator) {}
+    public function __construct(private UserPasswordHasherInterface $passwordHasher, private ValidatorInterface $validator) {}
     public function hashPassword(string $plainPassword, User $user): string
     {
         return $this->passwordHasher->hashPassword($user, $plainPassword);

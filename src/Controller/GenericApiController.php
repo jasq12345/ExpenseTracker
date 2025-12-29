@@ -2,7 +2,7 @@
 
 namespace App\Controller;
 
-use App\Service\EntityFacade;
+use App\Service\Facade\EntityFacade;
 use App\Service\Factory\ApiErrorResponseFactory;
 use Doctrine\Persistence\ObjectRepository;
 use Exception;
@@ -19,32 +19,46 @@ abstract class GenericApiController extends AbstractController
         protected EntityFacade $facade,
         protected ApiErrorResponseFactory $errorResponseFactory
     ) {}
+
+    abstract protected function getReadGroup(): string;
+
     protected function getAllEntities(): JsonResponse
     {
         $entities = $this->repository->findBy([], null, 50);
-        return $this->json($entities);
+
+        return $this->json($entities, 200, [], [
+            'groups' => [$this->getReadGroup()],
+        ]);
     }
 
     protected function getOneEntity(int $id): JsonResponse
     {
         $entity = $this->repository->find($id);
+
         if (!$entity) {
-            return $this->errorResponseFactory->notFound($this->facade->getEntityName($this->entityClass));
+            return $this->errorResponseFactory
+                ->notFound($this->facade->getEntityName($this->entityClass));
         }
-        return $this->json($entity);
+
+        return $this->json($entity, 200, [], [
+            'groups' => [$this->getReadGroup()],
+        ]);
     }
 
     protected function deleteEntity(int $id): JsonResponse
     {
         $entity = $this->repository->find($id);
+
         if (!$entity) {
-            return $this->errorResponseFactory->notFound($this->facade->getEntityName($this->entityClass));
+            return $this->errorResponseFactory
+                ->notFound($this->facade->getEntityName($this->entityClass));
         }
 
         try {
             $this->facade->delete($entity);
-        } catch (Exception) {
-            return $this->errorResponseFactory->notSaved($this->facade->getEntityName($entity));
+        } catch (Exception $e) {
+            return $this->errorResponseFactory
+                ->notSaved($this->facade->getEntityName($entity));
         }
 
         return $this->errorResponseFactory->success();
@@ -66,7 +80,8 @@ abstract class GenericApiController extends AbstractController
         try {
             $this->facade->persist($entity);
         } catch (Exception) {
-            return $this->errorResponseFactory->notSaved($this->facade->getEntityName($entity));
+            return $this->errorResponseFactory
+                ->notSaved($this->facade->getEntityName($this->facade->getEntityName($entity)));
         }
 
         return $this->errorResponseFactory->success();
@@ -75,8 +90,10 @@ abstract class GenericApiController extends AbstractController
     protected function updateEntity(Request $request, int $id): JsonResponse
     {
         $entity = $this->repository->find($id);
+
         if (!$entity) {
-            return $this->errorResponseFactory->notFound($this->facade->getEntityName($this->entityClass));
+            return $this->errorResponseFactory
+                ->notFound($this->facade->getEntityName($this->entityClass));
         }
 
         try {
@@ -91,7 +108,8 @@ abstract class GenericApiController extends AbstractController
         try {
             $this->facade->flush();
         } catch (Exception) {
-            return $this->errorResponseFactory->notSaved($this->facade->getEntityName($entity));
+            return $this->errorResponseFactory
+                ->notSaved($this->facade->getEntityName($entity));
         }
 
         return $this->errorResponseFactory->success();

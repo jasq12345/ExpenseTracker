@@ -6,6 +6,7 @@ use App\Repository\CategoryRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Attribute\Groups;
 
 #[ORM\Entity(repositoryClass: CategoryRepository::class)]
 class Category
@@ -13,19 +14,28 @@ class Category
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['category:read', 'transaction:read'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 100)]
+    #[Groups(['category:read'])]
     private ?string $name = null;
 
+    /**
+     * ✔ We expose user ONLY as object with id
+     * ❌ We do NOT expose user's relations
+     */
     #[ORM\ManyToOne(inversedBy: 'categories')]
-    #[ORM\JoinColumn(name:'user_id', nullable: false)]
+    #[ORM\JoinColumn(name: 'user_id', nullable: false)]
+    #[Groups(['category:read'])]
     private ?User $user = null;
 
     #[ORM\Column(length: 7, nullable: true)]
+    #[Groups(['category:read'])]
     private ?string $color = null;
 
     #[ORM\Column(length: 50, nullable: true)]
+    #[Groups(['category:read'])]
     private ?string $icon = null;
 
     /**
@@ -61,7 +71,7 @@ class Category
         return $this->user;
     }
 
-    public function setUser(User $user): static
+    public function setUser(?User $user): static
     {
         $this->user = $user;
 

@@ -6,6 +6,9 @@ use App\Enum\TransactionType;
 use App\Repository\TransactionRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Exception;
+use InvalidArgumentException;
+use Symfony\Component\Serializer\Attribute\Groups;
 
 #[ORM\Entity(repositoryClass: TransactionRepository::class)]
 class Transaction
@@ -13,36 +16,51 @@ class Transaction
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['transaction:read'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 100)]
+    #[Groups(['transaction:read'])]
     private ?string $name = null;
 
     #[ORM\ManyToOne(inversedBy: 'transactions')]
-    #[ORM\JoinColumn(name:'category_id')]
+    #[ORM\JoinColumn(name: 'category_id', nullable: true, onDelete: "SET NULL")]
+    #[Groups(['transaction:read'])]
     private ?Category $category = null;
 
     #[ORM\ManyToOne(inversedBy: 'transactions')]
-    #[ORM\JoinColumn(name:'user_id', nullable: false)]
+    #[ORM\JoinColumn(name: 'user_id', nullable: false)]
+    #[Groups(['transaction:read'])]
     private ?User $user = null;
 
     #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 2)]
+    #[Groups(['transaction:read'])]
     private ?string $price = null;
 
     #[ORM\Column(type: Types::INTEGER)]
+    #[Groups(['transaction:read'])]
     private ?int $amount = null;
 
     #[ORM\Column]
+    #[Groups(['transaction:read'])]
     private ?\DateTime $date = null;
 
     #[ORM\Column]
+    #[Groups(['transaction:read'])]
     private ?\DateTimeImmutable $createdAt = null;
 
     #[ORM\Column(length: 255, nullable: true)]
+    #[Groups(['transaction:read'])]
     private ?string $description = null;
 
     #[ORM\Column(type: Types::STRING, enumType: TransactionType::class)]
+    #[Groups(['transaction:read'])]
     private ?TransactionType $type = TransactionType::EXPENSE;
+
+    public function __construct()
+    {
+        $this->createdAt = new \DateTimeImmutable();
+    }
 
     public function getId(): ?int
     {
@@ -78,7 +96,7 @@ class Transaction
         return $this->user;
     }
 
-    public function setUser(User $user): static
+    public function setUser(?User $user): static
     {
         $this->user = $user;
 
@@ -114,12 +132,21 @@ class Transaction
         return $this->date;
     }
 
-    public function setDate(\DateTime $date): static
+    public function setDate(\DateTime|string $date): self
     {
-        $this->date = $date;
+        try{
+            if (is_string($date)) {
+                $date = new \DateTime($date);
+            }
+        } catch (Exception){
+            throw new InvalidArgumentException("Invalid date format");
+        }
 
+
+        $this->date = $date;
         return $this;
     }
+
 
     public function getCreatedAt(): ?\DateTimeImmutable
     {

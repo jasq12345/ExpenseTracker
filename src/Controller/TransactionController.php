@@ -4,7 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Transaction;
 use App\Repository\TransactionRepository;
-use App\Service\EntityFacade;
+use App\Service\Facade\EntityFacade;
 use App\Service\Factory\ApiErrorResponseFactory;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -12,6 +12,10 @@ use Symfony\Component\Routing\Attribute\Route;
 
 final class TransactionController extends GenericApiController
 {
+    protected function getReadGroup(): string
+    {
+        return 'transaction:read';
+    }
     public function __construct(TransactionRepository $categoryRepository, EntityFacade $facade, ApiErrorResponseFactory $errorResponseFactory)
     {
         parent::__construct(Transaction::class, $categoryRepository, $facade, $errorResponseFactory);

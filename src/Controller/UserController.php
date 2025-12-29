@@ -4,7 +4,7 @@ namespace App\Controller;
 
 use App\Entity\User;
 use App\Repository\UserRepository;
-use App\Service\EntityFacade;
+use App\Service\Facade\EntityFacade;
 use App\Service\Factory\ApiErrorResponseFactory;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -12,6 +12,10 @@ use Symfony\Component\Routing\Attribute\Route;
 
 class UserController extends GenericApiController
 {
+    protected function getReadGroup(): string
+    {
+        return 'user:read';
+    }
     public function __construct(UserRepository $categoryRepository, EntityFacade $facade, ApiErrorResponseFactory $errorResponseFactory)
     {
         parent::__construct(User::class, $categoryRepository, $facade, $errorResponseFactory);

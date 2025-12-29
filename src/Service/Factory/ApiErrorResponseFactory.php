@@ -44,4 +44,12 @@ class ApiErrorResponseFactory
             $status
         );
     }
+
+    public function forbidden(): JsonResponse
+    {
+        return new JsonResponse(
+            ['error' => 'Forbidden'],
+            Response::HTTP_FORBIDDEN
+        );
+    }
 }

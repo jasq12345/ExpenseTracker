@@ -7,6 +7,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
+use Symfony\Component\Serializer\Attribute\Groups;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: '`user`')]
@@ -15,12 +16,15 @@ class User implements PasswordAuthenticatedUserInterface
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['user:read', 'category:read', 'transaction:read'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 50)]
+    #[Groups(['user:read'])]
     private ?string $username = null;
 
     #[ORM\Column(length: 50)]
+    #[Groups(['user:read'])]
     private ?string $email = null;
 
     #[ORM\Column(length: 255)]
@@ -35,7 +39,7 @@ class User implements PasswordAuthenticatedUserInterface
     /**
      * @var Collection<int, Transaction>
      */
-    #[ORM\OneToMany(targetEntity: Transaction::class, mappedBy: 'user', cascade: ['remove'])]
+    #[ORM\OneToMany(targetEntity: Transaction::class, mappedBy: 'user', orphanRemoval: true)]
     private Collection $transactions;
 
     public function __construct()
@@ -105,7 +109,9 @@ class User implements PasswordAuthenticatedUserInterface
 
     public function removeCategory(Category $category): static
     {
-        $this->categories->removeElement($category);
+        if($this->categories->removeElement($category)){
+            $category->setUser(null);
+        }
         return $this;
     }
 
@@ -122,6 +128,14 @@ class User implements PasswordAuthenticatedUserInterface
         if (!$this->transactions->contains($transaction)) {
             $this->transactions->add($transaction);
             $transaction->setUser($this);
+        }
+
+        return $this;
+    }
+    public function removeTransaction(Transaction $transaction): static
+    {
+        if ($this->transactions->removeElement($transaction)) {
+            $transaction->setUser(null);
         }
 
         return $this;

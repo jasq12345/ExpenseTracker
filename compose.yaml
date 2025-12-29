@@ -1,6 +1,6 @@
 services:
   php:
-    image: php:8.4-fpm
+    build: .
     container_name: php
     volumes:
       - ./:/var/www/html
@@ -12,6 +12,7 @@ services:
     container_name: nginx
     volumes:
       - ./:/var/www/html
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf
     ports:
       - "8080:80"
     depends_on:

@@ -2,6 +2,8 @@ services:
   php:
     build: .
     container_name: php
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     volumes:
       - ./:/var/www/html
     depends_on:

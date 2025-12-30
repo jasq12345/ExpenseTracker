@@ -25,7 +25,6 @@ abstract class GenericApiController extends AbstractController
     protected function getAllEntities(): JsonResponse
     {
         $entities = $this->repository->findBy([], null, 50);
-
         return $this->json($entities, 200, [], [
             'groups' => [$this->getReadGroup()],
         ]);

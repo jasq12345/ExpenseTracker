@@ -3,9 +3,9 @@
 namespace App\Controller;
 
 use App\Entity\User;
-use App\Enum\Factory\ApiErrorResponseFactory;
 use App\Repository\UserRepository;
-use App\Service\Facade\EntityFacade;
+use App\Service\EntityFacade;
+use App\Service\Factory\ApiErrorResponseFactory;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;

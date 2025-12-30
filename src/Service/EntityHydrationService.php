@@ -47,9 +47,20 @@ final readonly class EntityHydrationService
      */
     private function resolveValue(ClassMetadata $metadata, string $field, mixed $value): mixed
     {
-        // ASSOCIATIONS
         if ($metadata->hasAssociation($field)) {
-            $target = $metadata->getAssociationTargetClass($field);
+            $mapping = $metadata->getAssociationMapping($field);
+            $target = $mapping['targetEntity'];
+            $isNullable = $mapping['joinColumns'][0]['nullable'] ?? false;
+
+            if ($value === null && $isNullable) {
+                return null;
+            }
+
+            if ($value === null && !$isNullable) {
+                throw new InvalidArgumentException(
+                    sprintf('Association "%s" cannot be null', $field)
+                );
+            }
 
             if (is_array($value) && isset($value['id'])) {
                 return $this->em->getReference($target, $value['id']);

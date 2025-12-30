@@ -1,10 +1,7 @@
 <?php
-namespace App\Service\Facade;
+namespace App\Service;
 
 use App\Entity\User;
-use App\Service\EntityDeletionService;
-use App\Service\EntityHydrationService;
-use App\Service\EntityMetadataService;
 use App\Service\Validation\UserValidator;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Exception\ORMException;

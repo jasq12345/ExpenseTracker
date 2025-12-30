@@ -2,7 +2,7 @@
 
 namespace App\Controller;
 
-use App\Service\Facade\EntityFacade;
+use App\Service\EntityFacade;
 use App\Service\Factory\ApiErrorResponseFactory;
 use Doctrine\Persistence\ObjectRepository;
 use Exception;

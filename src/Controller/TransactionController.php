@@ -4,7 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Transaction;
 use App\Repository\TransactionRepository;
-use App\Service\Facade\EntityFacade;
+use App\Service\EntityFacade;
 use App\Service\Factory\ApiErrorResponseFactory;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -20,7 +20,7 @@ final class TransactionController extends GenericApiController
     {
         parent::__construct(Transaction::class, $categoryRepository, $facade, $errorResponseFactory);
     }
-    #[Route('/api/transactions', name: 'app_transactions', methods: ['GET'])]
+    #[Route('/api/transactions/', name: 'app_transactions', methods: ['GET'])]
     public function getAllTransactions(): JsonResponse
     {
         return parent::getAllEntities();
@@ -38,7 +38,7 @@ final class TransactionController extends GenericApiController
         return parent::deleteEntity($id);
     }
 
-    #[Route('/api/transaction', name: 'app_transaction_post', methods: ['POST'])]
+    #[Route('/api/transaction/', name: 'app_transaction_post', methods: ['POST'])]
     public function newTransaction(Request $request): JsonResponse
     {
         return parent::newEntity($request);

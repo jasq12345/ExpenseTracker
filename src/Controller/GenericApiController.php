@@ -22,6 +22,7 @@ abstract class GenericApiController extends AbstractController
 
     abstract protected function getReadGroup(): string;
 
+    //need to add authentication next, now im waiting to php 8.4 to compile co I can install lexic JWT
     protected function getAllEntities(): JsonResponse
     {
         $entities = $this->repository->findBy([], null, 50);

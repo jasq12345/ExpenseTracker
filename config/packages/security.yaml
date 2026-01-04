@@ -1,34 +1,68 @@
+# config/packages/security.yaml
+
 security:
+    # --------------------------
+    # Password hashing
+    # --------------------------
     password_hashers:
         App\Entity\User: 'auto'
 
+    # --------------------------
+    # User providers
+    # --------------------------
     providers:
         app_user_provider:
             entity:
                 class: App\Entity\User
                 property: email
 
+    # --------------------------
+    # Firewalls
+    # --------------------------
     firewalls:
+        # Disable security for dev tools
         dev:
             pattern: ^/(_profiler|_wdt|assets|build)/
             security: false
 
+        # Main firewall for your app
         main:
             lazy: true
             provider: app_user_provider
-            # enable authenticator (form_login / jwt / custom)
 
-#    access_control:
-#        - { path: ^/api, roles: ROLE_USER }
+            # Lexik JWT authenticator
+            jwt: ~
 
+            # Optional: enable session / form login if needed
+            # Uncomment if you want browser login too
+            # form_login:
+            #     login_path: login
+            #     check_path: login
+            #     enable_csrf: true
 
+            # Optional: logout route
+            # logout:
+            #     path: /logout
+            #     invalidate_session: true
+
+    # --------------------------
+    # Access control (secured routes)
+    # --------------------------
+    access_control:
+        # Only authenticated users can access /api routes
+        - { path: ^/api, roles: ROLE_USER }
+        # You can add more protected paths here
+        # - { path: ^/admin, roles: ROLE_ADMIN }
+        # - { path: ^/profile, roles: ROLE_USER }
+
+# --------------------------
+# Test environment overrides
+# --------------------------
 when@test:
     security:
         password_hashers:
-            # Password hashers are resource-intensive by design to ensure security.
-            # In tests, it's safe to reduce their cost to improve performance.
             Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface:
                 algorithm: auto
-                cost: 4 # Lowest possible value for bcrypt
-                time_cost: 3 # Lowest possible value for argon
-                memory_cost: 10 # Lowest possible value for argon
+                cost: 4        # lowest bcrypt
+                time_cost: 3   # lowest argon
+                memory_cost: 10 # lowest argon

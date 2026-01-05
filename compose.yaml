@@ -3,6 +3,7 @@ version: "3.9"
 services:
   php:
     build: .
+    user: "${UID}:${GID}"
     container_name: php
     volumes:
       - ./:/var/www/html

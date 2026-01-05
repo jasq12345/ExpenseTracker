@@ -42,10 +42,16 @@ class User implements PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(targetEntity: Transaction::class, mappedBy: 'user', orphanRemoval: true)]
     private Collection $transactions;
 
+    /**
+     * @var Collection<int, RefreshToken>
+     */
+    #[ORM\OneToMany(targetEntity: RefreshToken::class, mappedBy: 'user', orphanRemoval: true)]
+    private Collection $refreshTokens;
     public function __construct()
     {
         $this->categories = new ArrayCollection();
         $this->transactions = new ArrayCollection();
+        $this->refreshTokens = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -136,6 +142,36 @@ class User implements PasswordAuthenticatedUserInterface
     {
         if ($this->transactions->removeElement($transaction)) {
             $transaction->setUser(null);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, RefreshToken>
+     */
+    public function getRefreshTokens(): Collection
+    {
+        return $this->refreshTokens;
+    }
+
+    public function addUser(RefreshToken $user): static
+    {
+        if (!$this->refreshTokens->contains($user)) {
+            $this->refreshTokens->add($user);
+            $user->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeUser(RefreshToken $user): static
+    {
+        if ($this->refreshTokens->removeElement($user)) {
+            // set the owning side to null (unless already changed)
+            if ($user->getUser() === $this) {
+                $user->setUser(null);
+            }
         }
 
         return $this;

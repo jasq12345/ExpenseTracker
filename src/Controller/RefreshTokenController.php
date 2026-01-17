@@ -32,6 +32,8 @@ final class RefreshTokenController extends AbstractController
 
         $this->em->remove($refreshToken);
 
+        //$this->em->persist($refreshToken);
+
         if ($expired) {
             return $this->json(['error' => 'Refresh token expired'], 401);
         }

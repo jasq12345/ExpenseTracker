@@ -33,6 +33,7 @@ final class RefreshTokenController extends AbstractController
         $this->em->remove($refreshToken);
 
         //$this->em->persist($refreshToken);
+        // i need to persist the refresh token to update the last_used_at field
 
         if ($expired) {
             return $this->json(['error' => 'Refresh token expired'], 401);

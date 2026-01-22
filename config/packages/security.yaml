@@ -10,6 +10,8 @@ security:
     # --------------------------
     # User providers
     # --------------------------
+
+    # need to change identifier like to implement custom UserProvider, so you can log with email or username
     providers:
         app_user_provider:
             entity:

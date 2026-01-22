@@ -54,14 +54,7 @@ class RefreshToken
         return $this->expiresAt;
     }
 
-    public function setExpiresAt(\DateTimeImmutable $expiresAt): static
-    {
-        $this->expiresAt = $expiresAt;
-
-        return $this;
-    }
-
-    public function getUser(): ?User
+    public function getUser(): User
     {
         return $this->user;
     }

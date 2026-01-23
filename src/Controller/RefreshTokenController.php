@@ -51,6 +51,7 @@ final class RefreshTokenController extends AbstractController
         }
         $user = $oldRefreshToken->getUser();
         $newRefreshToken->setUser($user);
+        // cos
 
         $this->em->persist($newRefreshToken);
         $this->em->flush();

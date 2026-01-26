@@ -2,9 +2,9 @@
 
 namespace App\Auth;
 
-use App\Auth\Exception\RefreshTokenExpiredException;
-use App\Auth\Exception\RefreshTokenNotFoundException;
 use App\Entity\User;
+use App\Exception\Auth\RefreshTokenExpiredException;
+use App\Exception\Auth\RefreshTokenNotFoundException;
 use App\Repository\RefreshTokenRepository;
 use Doctrine\ORM\EntityManagerInterface;
 

@@ -2,12 +2,8 @@
 
 namespace App\Auth;
 
-use App\Auth\Exception\RefreshTokenExpiredException;
-use App\Auth\Exception\RefreshTokenNotFoundException;
-use App\Auth\Exception\TokenGenerationException;
 use App\Service\Validation\RequestValidator;
 use Doctrine\ORM\EntityManagerInterface;
-use InvalidArgumentException;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
@@ -50,32 +46,26 @@ readonly class RefreshTokenManager
      *
      * @return array{refreshToken: string, accessToken: string} New token pair
      *
-     * @throws RefreshTokenNotFoundException When the provided refresh token does not exist
-     * @throws RefreshTokenExpiredException  When the provided refresh token has expired
-     * @throws TokenGenerationException      When new token generation fails
      * @throws \InvalidArgumentException     When request JSON is invalid or missing required fields
      */
     public function rotateRefreshToken(Request $request): array
     {
-        try {
-            $data = $this->validator->decodeJson($request, ['refreshToken']);
+        $data = $this->validator->decodeJson($request, ['refreshToken']);
 
-            return $this->em->wrapInTransaction(function () use ($data) {
-                $user = $this->refreshTokenService->validateToken($data['refreshToken']);
+        return $this->em->wrapInTransaction(
+            function () use ($data) {
+            $user = $this->refreshTokenService->validateToken($data['refreshToken']);
 
-                $newRefreshToken = $this->tokenGenerator->createRefreshToken($user);
-                $accessToken = $this->tokenGenerator->createAccessToken($user);
+            $newRefreshToken = $this->tokenGenerator->createRefreshToken($user);
+            $accessToken = $this->tokenGenerator->createAccessToken($user);
 
-                $this->refreshTokenService->removeToken($data['refreshToken']);
-                $this->em->persist($newRefreshToken);
+            $this->refreshTokenService->removeToken($data['refreshToken']);
+            $this->em->persist($newRefreshToken);
 
-                return [
-                    'refreshToken' => $newRefreshToken->getToken(),
-                    'accessToken'  => $accessToken,
-                ];
-            });
-        } catch (Throwable $e) {
-            throw new TokenRotationException('Token rotation failed', previous: $e);
-        }
+            return [
+                'refreshToken' => $newRefreshToken->getToken(),
+                'accessToken'  => $accessToken,
+            ];
+        });
     }
 }

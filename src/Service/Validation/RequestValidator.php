@@ -2,6 +2,8 @@
 
 namespace App\Service\Validation;
 
+use App\Exception\Validation\InvalidJsonException;
+use App\Exception\Validation\MissingRequiredFieldException;
 use InvalidArgumentException;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -35,13 +37,13 @@ class RequestValidator
 
         // Check for JSON decoding errors
         if ($data === null || json_last_error() !== JSON_ERROR_NONE) {
-            throw new InvalidArgumentException('Invalid JSON');
+            throw new InvalidJsonException();
         }
 
         // Validate required fields
         foreach ($expectedFields as $field) {
             if (!isset($data[$field])) {
-                throw new InvalidArgumentException('Missing field: ' . $field);
+                throw new MissingRequiredFieldException($field);
             }
         }
 

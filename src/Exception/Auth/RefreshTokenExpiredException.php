@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Auth\Exception;
+namespace App\Exception\Auth;
 
 class RefreshTokenExpiredException extends \Exception
 {

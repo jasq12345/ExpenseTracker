@@ -2,9 +2,9 @@
 
 namespace App\Auth;
 
-use App\Auth\Exception\TokenGenerationException;
 use App\Entity\RefreshToken;
 use App\Entity\User;
+use App\Exception\Auth\TokenGenerationException;
 use Lexik\Bundle\JWTAuthenticationBundle\Services\JWTTokenManagerInterface;
 use Random\RandomException;
 

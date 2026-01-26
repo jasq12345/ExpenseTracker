@@ -62,7 +62,6 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
     {
         return $this->roles;
     }
-
     public function setRoles(array $roles): static
     {
         $this->roles = $roles;
@@ -174,22 +173,22 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
         return $this->refreshTokens;
     }
 
-    public function addUser(RefreshToken $user): static
+    public function addRefreshToken(RefreshToken $refreshToken): static
     {
-        if (!$this->refreshTokens->contains($user)) {
-            $this->refreshTokens->add($user);
-            $user->setUser($this);
+        if (!$this->refreshTokens->contains($refreshToken)) {
+            $this->refreshTokens->add($refreshToken);
+            $refreshToken->setUser($this);
         }
 
         return $this;
     }
 
-    public function removeUser(RefreshToken $user): static
+    public function removeRefreshToken(RefreshToken $refreshToken): static
     {
-        if ($this->refreshTokens->removeElement($user)) {
+        if ($this->refreshTokens->removeElement($refreshToken)) {
             // set the owning side to null (unless already changed)
-            if ($user->getUser() === $this) {
-                $user->setUser(null);
+            if ($refreshToken->getUser() === $this) {
+                $refreshToken->setUser(null);
             }
         }
 

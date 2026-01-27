@@ -3,23 +3,42 @@
 namespace App\Service\Auth;
 
 use App\Entity\User;
+use App\Service\Hydration\EntityHydrationService;
 use App\Service\Validation\RequestValidator;
+use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\Exception\ORMException;
+use Doctrine\ORM\Mapping\MappingException;
 use Symfony\Component\HttpFoundation\Request;
 
-class RegistrationService
+readonly class RegistrationService
 {
     public function __construct(
-        private readonly RequestValidator $requestValidator,
+        private RequestValidator       $requestValidator,
+        private EntityHydrationService $hydrationService,
+        private EntityManagerInterface $em
     ) {}
 
+    /**
+     * @throws MappingException
+     * @throws ORMException
+     */
     public function createNewUser(Request $request): void
     {
         $user = new User();
 
-        // now decode request
         $data = $this->requestValidator->decodeJson($request, ['username', 'email', 'password']);
-        //here hydrate properties form request to user entity
 
+        $this->hydrationService->hydrate($user, $data);
 
+        //walidacja danych
+
+//        if ($entity instanceof User && isset($data['password'])){
+//            $entity->setPassword(
+//                $this->validator->hashPassword($data['password'], $entity)
+//            );
+//        }
+
+        $this->em->persist($user);
+        $this->em->flush();
     }
 }

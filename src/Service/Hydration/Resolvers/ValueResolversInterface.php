@@ -6,6 +6,6 @@ use Doctrine\Persistence\Mapping\ClassMetadata;
 
 interface ValueResolversInterface
 {
-    public function resolve();
     public function supports(ClassMetadata $metadata, string $field, mixed $value): bool;
+    public function resolve(ClassMetadata $metadata, string $field, mixed $value): mixed;
 }

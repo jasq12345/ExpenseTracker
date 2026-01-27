@@ -20,11 +20,13 @@ class UserController extends GenericApiController
     {
         parent::__construct(User::class, $categoryRepository, $facade, $errorResponseFactory);
     }
-    #[Route("/api/users", name: "app_users", methods: ["GET"])]
+
+    //leave for later to implement this only for roles with admin rights
+    /*#[Route("/api/users", name: "app_users", methods: ["GET"])]
     public function getAllUsers(): JsonResponse
     {
         return parent::getAllEntities();
-    }
+    }*/
 
     #[Route("/api/user/{id}", name: "app_user_get", methods: ["GET"])]
     public function getOneUser(int $id): JsonResponse

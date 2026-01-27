@@ -47,7 +47,7 @@ class Transaction
 
     #[ORM\Column]
     #[Groups(['transaction:read'])]
-    private ?\DateTimeImmutable $createdAt = null;
+    private ?\DateTimeImmutable $createdAt;
 
     #[ORM\Column(length: 255, nullable: true)]
     #[Groups(['transaction:read'])]

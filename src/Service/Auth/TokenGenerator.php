@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Auth;
+namespace App\Service\Auth;
 
 use App\Entity\RefreshToken;
 use App\Entity\User;

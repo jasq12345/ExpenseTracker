@@ -2,7 +2,7 @@
 
 namespace App\Controller;
 
-use App\Auth\RefreshTokenManager;
+use App\Service\Auth\RefreshTokenManager;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;

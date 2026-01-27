@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Auth;
+namespace App\Service\Auth;
 
 use App\Service\Validation\RequestValidator;
 use Doctrine\ORM\EntityManagerInterface;

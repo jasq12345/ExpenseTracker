@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Service;
+namespace App\Service\Hydration;
 
 use DateTime;
 use DateTimeImmutable;

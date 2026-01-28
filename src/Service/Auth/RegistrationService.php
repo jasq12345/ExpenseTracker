@@ -30,13 +30,7 @@ readonly class RegistrationService
 
         $this->hydrationService->hydrate($user, $data);
 
-        //walidacja danych
-
-//        if ($entity instanceof User && isset($data['password'])){
-//            $entity->setPassword(
-//                $this->validator->hashPassword($data['password'], $entity)
-//            );
-//        }
+        $user->setPassword($this->validator->hashPassword($data['password'], $user));
 
         $this->em->persist($user);
         $this->em->flush();

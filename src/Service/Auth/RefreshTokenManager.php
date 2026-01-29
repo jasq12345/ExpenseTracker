@@ -2,9 +2,8 @@
 
 namespace App\Service\Auth;
 
-use App\Service\Validation\RequestValidator;
+use App\Dto\Auth\RefreshTokenDto;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\HttpFoundation\Request;
 
 /**
  * Manages refresh token rotation for user authentication.
@@ -20,13 +19,11 @@ readonly class RefreshTokenManager
     /**
      * @param TokenGenerator         $tokenGenerator         Service for creating new tokens
      * @param RefreshTokenService    $refreshTokenService    Service for validating/removing tokens
-     * @param RequestValidator       $validator              Service for JSON request validation
      * @param EntityManagerInterface $em                     Doctrine entity manager for transactions
      */
     public function __construct(
         private TokenGenerator         $tokenGenerator,
         private RefreshTokenService    $refreshTokenService,
-        private RequestValidator       $validator,
         private EntityManagerInterface $em
     ) {}
 
@@ -42,24 +39,20 @@ readonly class RefreshTokenManager
      * All operations occur within a database transaction to ensure consistency.
      * If token generation fails, the transaction rolls back and the old token remains valid.
      *
-     * @param Request $request HTTP request containing JSON body with 'refreshToken' field
-     *
+     * @param RefreshTokenDto $dto
      * @return array{refreshToken: string, accessToken: string} New token pair
      *
-     * @throws \InvalidArgumentException     When request JSON is invalid or missing required fields
      */
-    public function rotateRefreshToken(Request $request): array
+    public function rotateRefreshToken(RefreshTokenDto $dto): array
     {
-        $data = $this->validator->decodeJson($request, ['refreshToken']);
-
         return $this->em->wrapInTransaction(
-            function () use ($data) {
-            $user = $this->refreshTokenService->validateToken($data['refreshToken']);
+            function () use ($dto) {
+            $user = $this->refreshTokenService->validateToken($dto->refreshToken);
 
             $newRefreshToken = $this->tokenGenerator->createRefreshToken($user);
             $accessToken = $this->tokenGenerator->createAccessToken($user);
 
-            $this->refreshTokenService->removeToken($data['refreshToken']);
+            $this->refreshTokenService->removeToken($dto->refreshToken);
             $this->em->persist($newRefreshToken);
 
             return [

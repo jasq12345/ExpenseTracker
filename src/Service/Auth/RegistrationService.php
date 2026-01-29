@@ -19,6 +19,8 @@ readonly class RegistrationService
     {
         $user = new User();
 
+        $user->setUsername($dto->username);
+        $user->setEmail($dto->email);
         $user->setPassword($this->passwordHasher->hashPassword($user, $dto->password));
 
         $this->em->persist($user);

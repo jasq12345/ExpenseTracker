@@ -3,7 +3,7 @@ namespace App\Service;
 
 use App\Entity\User;
 use App\Service\Hydration\EntityHydrationService;
-use App\Service\Validation\UserValidator;
+use App\Validator\UserValidator;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Exception\ORMException;
 use Symfony\Component\HttpFoundation\Request;

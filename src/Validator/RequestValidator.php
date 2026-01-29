@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Service\Validation;
+namespace App\Validator;
 
 use App\Exception\Validation\InvalidJsonException;
 use Symfony\Component\HttpFoundation\Request;

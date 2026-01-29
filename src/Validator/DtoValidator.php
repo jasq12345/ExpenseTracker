@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Service\Validation;
+namespace App\Validator;
 
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Validator\Validator\ValidatorInterface;

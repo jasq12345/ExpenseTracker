@@ -3,9 +3,7 @@
 namespace App\Service\Auth;
 
 use App\Dto\Auth\RefreshTokenDto;
-use App\Service\Validation\RequestValidator;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\HttpFoundation\Request;
 
 /**
  * Manages refresh token rotation for user authentication.

@@ -3,7 +3,7 @@
 namespace App\Mapper;
 
 use App\Dto\Auth\RefreshTokenDto;
-use App\Service\Validation\RequestValidator;
+use App\Validator\RequestValidator;
 use Symfony\Component\HttpFoundation\Request;
 
 readonly class RefreshTokenMapper

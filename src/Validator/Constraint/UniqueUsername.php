@@ -8,7 +8,7 @@ use Symfony\Component\Validator\Constraint;
 class UniqueUsername extends Constraint
 {
     public string $message = 'Invalid data.';
-    public string $messageConflict = 'Conflicting data';
+    public string $messageConflict = 'Conflict';
 
     public function validatedBy(): string
     {

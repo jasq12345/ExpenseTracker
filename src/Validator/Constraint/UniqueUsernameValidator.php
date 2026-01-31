@@ -28,6 +28,7 @@ class UniqueUsernameValidator extends ConstraintValidator
 
         if (mb_strlen($value) < 3 || mb_strlen($value) > 50) {
             $this->context->buildViolation($constraint->message)->addViolation();
+            return;
         }
 
         $existing = $this->em->getRepository(User::class)
@@ -35,7 +36,6 @@ class UniqueUsernameValidator extends ConstraintValidator
 
         if ($existing) {
             $this->context->buildViolation($constraint->messageConflict)
-                ->atPath('username')
                 ->addViolation();
         }
     }

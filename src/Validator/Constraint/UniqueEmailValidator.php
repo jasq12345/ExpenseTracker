@@ -3,14 +3,12 @@
 namespace App\Validator\Constraint;
 
 use App\Entity\User;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
-use Doctrine\ORM\EntityManagerInterface;
 
 class UniqueEmailValidator extends ConstraintValidator
 {
-
-
     public function __construct(
         private readonly EntityManagerInterface $em
     ) {}
@@ -21,7 +19,7 @@ class UniqueEmailValidator extends ConstraintValidator
             return;
         }
 
-        $value = trim((string)$value);
+        $value = trim((string) $value);
 
         if ($value === '') {
             $this->context->buildViolation($constraint->message)
@@ -35,12 +33,12 @@ class UniqueEmailValidator extends ConstraintValidator
             return;
         }
 
-        $existing = $this->em->getRepository(User::class)
+        $existing = $this->em
+            ->getRepository(User::class)
             ->findOneBy(['email' => $value]);
 
         if ($existing) {
             $this->context->buildViolation($constraint->messageConflict)
-                ->atPath('email')
                 ->addViolation();
         }
     }

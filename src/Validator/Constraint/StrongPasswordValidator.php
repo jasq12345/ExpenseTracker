@@ -24,14 +24,16 @@ class StrongPasswordValidator extends ConstraintValidator
         if (mb_strlen($value) < 8) {
             $this->context->buildViolation($constraint->message)
                 ->addViolation();
+            return;
         }
 
         if (!preg_match('/^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[!@#$%^&*]).+$/', $value)) {
             $this->context->buildViolation($constraint->message)
                 ->addViolation();
+            return;
         }
 
-        $notCompromised = new NotCompromisedPassword(['message' => $constraint->message]);
+        $notCompromised = new NotCompromisedPassword(message: $constraint->message);
         $violations = $this->context->getValidator()->validate($value, $notCompromised);
 
         foreach ($violations as $violation) {

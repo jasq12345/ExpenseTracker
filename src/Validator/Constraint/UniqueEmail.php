@@ -1,5 +1,4 @@
 <?php
-/** @noinspection ALL */
 
 namespace App\Validator\Constraint;
 
@@ -9,8 +8,8 @@ use Symfony\Component\Validator\Constraint;
 #[Attribute(Attribute::TARGET_PROPERTY)]
 class UniqueEmail extends Constraint
 {
-    public string $message = 'Invalid data.';
-    public string $messageConflict = 'Conflicting data';
+    public string $message = 'Invalid data';
+    public string $messageConflict = 'Conflict';
 
     public function validatedBy(): string
     {

@@ -7,7 +7,7 @@ use App\Exception\Auth\EnumInvalidValueException;
 use Doctrine\ORM\Mapping\MappingException;
 use Doctrine\Persistence\Mapping\ClassMetadata;
 
-class EnumResolver implements ValueResolversInterface
+class EnumResolver implements HydrationResolverInterface
 {
     /**
      * @throws MappingException

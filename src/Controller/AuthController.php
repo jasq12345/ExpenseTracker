@@ -2,7 +2,9 @@
 
 namespace App\Controller;
 
+use App\Mapper\RefreshTokenMapper;
 use App\Mapper\UserRegistrationMapper;
+use App\Service\Auth\RefreshTokenManager;
 use App\Service\Auth\RegistrationService;
 use App\Validator\DtoValidator;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -14,14 +16,16 @@ final class AuthController extends AbstractController
 {
 
     public function __construct(
-        private readonly UserRegistrationMapper $mapper,
-        private readonly RegistrationService $registrationService,
-        private readonly DtoValidator $validator
+        private readonly UserRegistrationMapper $registrationMapper,
+        private readonly RefreshTokenMapper     $refreshTokenMapper,
+        private readonly RegistrationService    $registrationService,
+        private readonly DtoValidator           $validator,
+        private readonly RefreshTokenManager    $refreshTokenManager
     ) {}
     #[Route('/auth/register', name: 'token')]
     public function register(Request $request): JsonResponse
     {
-        $dto = $this->mapper->mapRequestToDto($request);
+        $dto = $this->registrationMapper->mapRequestToDto($request);
 
         if ($response = $this->validator->validate($dto)) {
             return $response;
@@ -29,6 +33,20 @@ final class AuthController extends AbstractController
 
         $this->registrationService->createNewUser($dto);
 
-        return $this->json(['message' => 'User created successfully']);
+        return $this->json(['message' => 'User created successfully'], 201);
+    }
+
+    #[Route('/refresh/token', name: 'app_refresh_token', methods: ['POST'])]
+    public function newRefreshToken(Request $request): JsonResponse
+    {
+        $dto = $this->refreshTokenMapper->mapRequestToDto($request);
+
+        if ($response = $this->validator->validate($dto)) {
+            return $response;
+        }
+
+        $data = $this->refreshTokenManager->rotateRefreshToken($dto);
+
+        return $this->json($data);
     }
 }

@@ -9,7 +9,7 @@ use Doctrine\ORM\Exception\ORMException;
 use Doctrine\ORM\Mapping\MappingException;
 use Doctrine\Persistence\Mapping\ClassMetadata;
 
-readonly class RelationResolver implements ValueResolversInterface
+readonly class RelationResolver implements HydrationResolverInterface
 {
 
     public function __construct(private EntityManagerInterface $em) {}

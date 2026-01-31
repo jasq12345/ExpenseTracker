@@ -9,22 +9,30 @@ final readonly class DtoValidator
 {
     public function __construct(private ValidatorInterface $validator) {}
 
-    /**
-     * Validate a DTO and return a JsonResponse on error.
-     * Returns null if DTO is valid.
-     */
     public function validate(object $dto): ?JsonResponse
     {
-        $errors = $this->validator->validate($dto);
-        if (count($errors) === 0) {
+        $violations = $this->validator->validate($dto);
+
+        if (count($violations) === 0) {
             return null;
         }
 
-        $messages = array_map(
-            fn($e) => $e->getMessage(),
-            iterator_to_array($errors)
-        );
+        $errors = [];
+        $hasConflict = false;
 
-        return new JsonResponse(['errors' => $messages], 400);
+        foreach ($violations as $violation) {
+            $path = trim($violation->getPropertyPath(), '.');
+
+            $errors[$path][] = $violation->getMessage();
+
+            if ($violation->getMessage() === 'Conflict'){
+                $hasConflict = true;
+            }
+        }
+
+        return new JsonResponse(
+            ['errors' => $errors],
+            $hasConflict ? 409 : 400
+        );
     }
 }

@@ -24,13 +24,13 @@ class UniqueEmailValidator extends ConstraintValidator
         $value = trim((string)$value);
 
         if ($value === '') {
-            $this->context->buildViolation($constraint->messageNotBlank)
+            $this->context->buildViolation($constraint->message)
                 ->addViolation();
             return;
         }
 
         if (!filter_var($value, FILTER_VALIDATE_EMAIL)) {
-            $this->context->buildViolation($constraint->messageInvalid)
+            $this->context->buildViolation($constraint->message)
                 ->addViolation();
             return;
         }
@@ -39,7 +39,8 @@ class UniqueEmailValidator extends ConstraintValidator
             ->findOneBy(['email' => $value]);
 
         if ($existing) {
-            $this->context->buildViolation($constraint->messageUnique)
+            $this->context->buildViolation($constraint->messageConflict)
+                ->atPath('email')
                 ->addViolation();
         }
     }

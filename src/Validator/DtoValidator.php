@@ -15,16 +15,24 @@ final readonly class DtoValidator
      */
     public function validate(object $dto): ?JsonResponse
     {
-        $errors = $this->validator->validate($dto);
-        if (count($errors) === 0) {
-            return null;
+        $violations = $this->validator->validate($dto);
+
+        if (count($violations) > 0) {
+            $errors = [];
+            $statusCode = 400; // default
+
+            foreach ($violations as $violation) {
+                $path = $violation->getPropertyPath();
+                $msg = $violation->getMessage();
+                $errors[$path][] = $msg;
+
+                if ($msg === 'Conflict') {
+                    $statusCode = 409; // duplicate username
+                }
+            }
+
+            return new JsonResponse(['errors' => $errors], $statusCode);
         }
-
-        $messages = array_map(
-            fn($e) => $e->getMessage(),
-            iterator_to_array($errors)
-        );
-
-        return new JsonResponse(['errors' => $messages], 400);
+        return null;
     }
 }

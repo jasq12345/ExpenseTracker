@@ -2,7 +2,7 @@
 
 namespace App\Service\Hydration\Resolvers;
 
-use App\Service\Hydration\Resolvers\ValueResolversInterface;
+use App\Service\Hydration\Resolvers\HydrationResolverInterface;
 use DateMalformedStringException;
 use DateTime;
 use DateTimeImmutable;
@@ -11,7 +11,7 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping\MappingException;
 use Doctrine\Persistence\Mapping\ClassMetadata;
 
-class DatetimeResolver implements ValueResolversInterface
+class DatetimeResolver implements HydrationResolverInterface
 {
     /**
      * @throws MappingException

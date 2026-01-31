@@ -22,6 +22,7 @@ readonly class RegistrationService
         $user->setUsername($dto->username);
         $user->setEmail($dto->email);
         $user->setPassword($this->passwordHasher->hashPassword($user, $dto->password));
+        $user->setRoles(['ROLE_USER']);
 
         $this->em->persist($user);
         $this->em->flush();

@@ -24,7 +24,7 @@ services:
     # Auto-tag hydration resolvers
     # ----------------------------------
     _instanceof:
-        App\Service\Hydration\Resolver\HydrationResolverInterface:
+        App\Service\Hydration\Resolvers\HydrationResolverInterface:
             tags: ['hydration.resolver']
 
     # ----------------------------------

@@ -55,6 +55,7 @@ readonly class RefreshTokenManager
 
             $this->refreshTokenService->removeToken($dto->refreshToken);
             $this->em->persist($newRefreshToken);
+            $this->em->flush();
 
             return [
                 'refreshToken' => $newRefreshToken->getToken(),
@@ -72,6 +73,9 @@ readonly class RefreshTokenManager
     {
         $newRefreshToken = $this->tokenGenerator->createRefreshToken($user);
         $accessToken = $this->tokenGenerator->createAccessToken($user);
+
+        $this->em->persist($newRefreshToken);
+
         return array($newRefreshToken, $accessToken);
     }
 }

@@ -10,6 +10,7 @@ use App\Service\Auth\LoginService;
 use App\Service\Auth\RefreshTokenManager;
 use App\Service\Auth\RegistrationService;
 use App\Validator\DtoValidator;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -25,7 +26,7 @@ final class AuthController extends AbstractController
         private readonly LoginService           $loginService,
         private readonly RegistrationService    $registrationService,
         private readonly DtoValidator           $validator,
-        private readonly RefreshTokenManager    $refreshTokenManager
+        private readonly RefreshTokenManager    $refreshTokenManager,
     ) {}
     #[Route('/auth/register', name: 'token')]
     public function register(Request $request): JsonResponse
@@ -52,6 +53,7 @@ final class AuthController extends AbstractController
 
         $data = $this->refreshTokenManager->rotateRefreshToken($dto);
 
+
         return $this->json($data);
     }
 
@@ -67,8 +69,7 @@ final class AuthController extends AbstractController
             return $response;
         }
 
-        $data = $this->loginService->login($dto);
 
-        return $this->json($data);
+        return $this->loginService->login($dto);
     }
 }

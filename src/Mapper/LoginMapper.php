@@ -15,9 +15,11 @@ readonly class LoginMapper
     {
         $data = $this->requestValidator->decodeJson($request);
 
+        $idenifier = $data['identifier'] ?? '';
+        $password = $data['password'] ?? '';
         return new LoginDto(
-            $data['username'] ?? '',
-            $data['password'] ?? ''
+            $idenifier ?? '',
+            $password ?? ''
         );
     }
 }

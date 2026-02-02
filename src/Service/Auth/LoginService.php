@@ -4,6 +4,7 @@ namespace App\Service\Auth;
 
 use App\Exception\Auth\TokenGenerationException;
 use App\Repository\UserRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
@@ -14,6 +15,7 @@ readonly class  LoginService
         private UserRepository              $userRepository,
         private UserPasswordHasherInterface $passwordHasher,
         private RefreshTokenManager         $refreshTokenManager,
+        private EntityManagerInterface       $em
     ) {}
 
     /**
@@ -29,11 +31,13 @@ readonly class  LoginService
             return new JsonResponse(['message' => 'User not found'], 404);
         }
 
-        if($user->getPassword() !== $this->passwordHasher->hashPassword($user, $dto->password)) {
+        if (!$this->passwordHasher->isPasswordValid($user, $dto->password)) {
             return new JsonResponse(['message' => 'Invalid credentials'], 401);
         }
 
         list($newRefreshToken, $accessToken) = $this->refreshTokenManager->newTokens($user);
+
+        $this->em->flush();
 
         return new JsonResponse([
             'refreshToken' => $newRefreshToken->getToken(),

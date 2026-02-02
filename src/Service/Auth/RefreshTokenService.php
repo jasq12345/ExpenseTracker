@@ -49,7 +49,7 @@ readonly class RefreshTokenService
             throw new RefreshTokenNotFoundException();
         }
 
-        if ($token->isExpired()) {
+        if ($this->refreshTokenRepository->isExpired($token)) {
             throw new RefreshTokenExpiredException();
         }
 

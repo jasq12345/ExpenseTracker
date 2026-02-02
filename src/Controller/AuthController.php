@@ -2,15 +2,11 @@
 
 namespace App\Controller;
 
-use App\Exception\Auth\TokenGenerationException;
-use App\Mapper\LoginMapper;
 use App\Mapper\RefreshTokenMapper;
-use App\Mapper\UserRegistrationMapper;
-use App\Service\Auth\LoginService;
-use App\Service\Auth\RefreshTokenManager;
+use App\Mapper\RegistrationMapper;
+use App\Security\Token\RefreshTokenService;
 use App\Service\Auth\RegistrationService;
 use App\Validator\DtoValidator;
-use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -20,13 +16,11 @@ final class AuthController extends AbstractController
 {
 
     public function __construct(
-        private readonly UserRegistrationMapper $registrationMapper,
-        private readonly RefreshTokenMapper     $refreshTokenMapper,
-        private readonly LoginMapper            $loginMapper,
-        private readonly LoginService           $loginService,
-        private readonly RegistrationService    $registrationService,
-        private readonly DtoValidator           $validator,
-        private readonly RefreshTokenManager    $refreshTokenManager,
+        private readonly RegistrationMapper  $registrationMapper,
+        private readonly RefreshTokenMapper  $refreshTokenMapper,
+        private readonly RegistrationService $registrationService,
+        private readonly RefreshTokenService $refreshTokenService,
+        private readonly DtoValidator        $validator,
     ) {}
     #[Route('/auth/register', name: 'token')]
     public function register(Request $request): JsonResponse
@@ -51,25 +45,15 @@ final class AuthController extends AbstractController
             return $response;
         }
 
-        $data = $this->refreshTokenManager->rotateRefreshToken($dto);
+        $data = $this->refreshTokenService->rotateRefreshToken($dto);
 
 
         return $this->json($data);
     }
 
-    /**
-     * @throws TokenGenerationException
-     */
     #[Route('/auth/login', name: 'app_login', methods: ['POST'])]
-    public function login(Request $request): JsonResponse
+    public function login(Request $request): never
     {
-        $dto = $this->loginMapper->mapRequestToDto($request);
-
-        if($response = $this->validator->validate($dto)) {
-            return $response;
-        }
-
-
-        return $this->loginService->login($dto);
+        throw new \LogicException('Handled by json_login firewall');
     }
 }

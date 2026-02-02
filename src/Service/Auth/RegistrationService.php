@@ -2,7 +2,7 @@
 
 namespace App\Service\Auth;
 
-use App\Dto\Auth\UserRegistrationDto;
+use App\Dto\Auth\RegisterDto;
 use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
@@ -15,7 +15,7 @@ readonly class RegistrationService
     ) {}
 
 
-    public function createNewUser(UserRegistrationDto $dto): void
+    public function createNewUser(RegisterDto $dto): User
     {
         $user = new User();
 
@@ -26,5 +26,7 @@ readonly class RegistrationService
 
         $this->em->persist($user);
         $this->em->flush();
+
+        return $user;
     }
 }

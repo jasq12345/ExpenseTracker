@@ -6,7 +6,7 @@ use App\Validator\Constraint\StrongPassword;
 use App\Validator\Constraint\UniqueEmail;
 use App\Validator\Constraint\UniqueUsername;
 
-final class UserRegistrationDto
+final class RegisterDto
 {
     public function __construct(
         #[UniqueUsername]

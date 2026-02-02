@@ -1,61 +1,40 @@
 # config/packages/security.yaml
 
 security:
-    # --------------------------
-    # Password hashing
-    # --------------------------
     password_hashers:
-        App\Entity\User: 'auto'
+        Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface: 'auto'
 
-    # --------------------------
-    # User providers
-    # --------------------------
-
-    # need to change identifier like to implement custom UserProvider, so you can log with email or username
     providers:
         app_user_provider:
             entity:
                 class: App\Entity\User
-                property: email
+                property: email  # lub username
 
-    # --------------------------
-    # Firewalls
-    # --------------------------
     firewalls:
-        # Disable security for dev tools
         dev:
-            pattern: ^/(_profiler|_wdt|assets|build)/
+            pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
 
-        # Main firewall for your app
-        main:
-            lazy: true
-            provider: app_user_provider
+        login:
+            pattern: ^/api/login
+            stateless: true
+            json_login:
+                check_path: /api/login
+                username_path: identifier
+                password_path: password
+                success_handler: lexik_jwt_authentication.handler.authentication_success
+                failure_handler: lexik_jwt_authentication.handler.authentication_failure
 
-            # Lexik JWT authenticator
+        api:
+            pattern: ^/api
+            stateless: true
             jwt: ~
 
-            # Optional: enable session / form login if needed
-            # Uncomment if you want browser login too
-            # form_login:
-            #     login_path: login
-            #     check_path: login
-            #     enable_csrf: true
-
-            # Optional: logout route
-            # logout:
-            #     path: /logout
-            #     invalidate_session: true
-
-    # --------------------------
-    # Access control (secured routes)
-    # --------------------------
     access_control:
-        # Only authenticated users can access /api routes
+        - { path: ^/api/login, roles: PUBLIC_ACCESS }
+        - { path: ^/api/register, roles: PUBLIC_ACCESS }
+        - { path: ^/api/token/refresh, roles: PUBLIC_ACCESS }
         - { path: ^/api, roles: ROLE_USER }
-        # You can add more protected paths here
-        # - { path: ^/admin, roles: ROLE_ADMIN }
-        # - { path: ^/profile, roles: ROLE_USER }
 
 # --------------------------
 # Test environment overrides

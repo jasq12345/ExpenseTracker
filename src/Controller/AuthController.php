@@ -3,8 +3,8 @@
 namespace App\Controller;
 
 use App\Mapper\RefreshTokenMapper;
-use App\Mapper\UserRegistrationMapper;
-use App\Service\Auth\RefreshTokenManager;
+use App\Mapper\RegistrationMapper;
+use App\Security\Token\RefreshTokenService;
 use App\Service\Auth\RegistrationService;
 use App\Validator\DtoValidator;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -16,11 +16,11 @@ final class AuthController extends AbstractController
 {
 
     public function __construct(
-        private readonly UserRegistrationMapper $registrationMapper,
-        private readonly RefreshTokenMapper     $refreshTokenMapper,
-        private readonly RegistrationService    $registrationService,
-        private readonly DtoValidator           $validator,
-        private readonly RefreshTokenManager    $refreshTokenManager
+        private readonly RegistrationMapper  $registrationMapper,
+        private readonly RefreshTokenMapper  $refreshTokenMapper,
+        private readonly RegistrationService $registrationService,
+        private readonly RefreshTokenService $refreshTokenService,
+        private readonly DtoValidator        $validator,
     ) {}
     #[Route('/auth/register', name: 'token')]
     public function register(Request $request): JsonResponse
@@ -45,8 +45,15 @@ final class AuthController extends AbstractController
             return $response;
         }
 
-        $data = $this->refreshTokenManager->rotateRefreshToken($dto);
+        $data = $this->refreshTokenService->rotateRefreshToken($dto);
+
 
         return $this->json($data);
+    }
+
+    #[Route('/auth/login', name: 'app_login', methods: ['POST'])]
+    public function login(Request $request): never
+    {
+        throw new \LogicException('Handled by json_login firewall');
     }
 }

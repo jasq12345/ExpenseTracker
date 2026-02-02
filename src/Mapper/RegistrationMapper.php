@@ -2,23 +2,23 @@
 
 namespace App\Mapper;
 
-use App\Dto\Auth\UserRegistrationDto;
+use App\Dto\Auth\RegisterDto;
 use App\Validator\RequestValidator;
 use Symfony\Component\HttpFoundation\Request;
 
-readonly class UserRegistrationMapper
+readonly class RegistrationMapper
 {
     public function __construct(
         private RequestValidator $requestValidator
     ) {}
-    public function mapRequestToDto(Request $request): UserRegistrationDto
+    public function mapRequestToDto(Request $request): RegisterDto
     {
         $data = $this->requestValidator->decodeJson($request);
 
-        return new UserRegistrationDto(
+        return new RegisterDto(
             $data['username'] ?? '',
-                $data['email'] ?? '',
-                $data['password'] ?? ''
+            $data['email'] ?? '',
+            $data['password'] ?? ''
         );
     }
 }

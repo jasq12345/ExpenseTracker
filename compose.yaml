@@ -7,6 +7,8 @@ services:
     container_name: php
     volumes:
       - ./:/var/www/html
+      # FIX: Mount to a new filename (xdebug-local.ini) so we don't overwrite the extension loader
+      - ./docker/xdebug.ini:/usr/local/etc/php/conf.d/xdebug-local.ini
     extra_hosts:
       - "host.docker.internal:host-gateway"
     depends_on:

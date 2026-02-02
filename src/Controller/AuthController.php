@@ -2,8 +2,11 @@
 
 namespace App\Controller;
 
+use App\Exception\Auth\TokenGenerationException;
+use App\Mapper\LoginMapper;
 use App\Mapper\RefreshTokenMapper;
 use App\Mapper\UserRegistrationMapper;
+use App\Service\Auth\LoginService;
 use App\Service\Auth\RefreshTokenManager;
 use App\Service\Auth\RegistrationService;
 use App\Validator\DtoValidator;
@@ -18,6 +21,8 @@ final class AuthController extends AbstractController
     public function __construct(
         private readonly UserRegistrationMapper $registrationMapper,
         private readonly RefreshTokenMapper     $refreshTokenMapper,
+        private readonly LoginMapper            $loginMapper,
+        private readonly LoginService           $loginService,
         private readonly RegistrationService    $registrationService,
         private readonly DtoValidator           $validator,
         private readonly RefreshTokenManager    $refreshTokenManager
@@ -46,6 +51,23 @@ final class AuthController extends AbstractController
         }
 
         $data = $this->refreshTokenManager->rotateRefreshToken($dto);
+
+        return $this->json($data);
+    }
+
+    /**
+     * @throws TokenGenerationException
+     */
+    #[Route('/auth/login', name: 'app_login', methods: ['POST'])]
+    public function login(Request $request): JsonResponse
+    {
+        $dto = $this->loginMapper->mapRequestToDto($request);
+
+        if($response = $this->validator->validate($dto)) {
+            return $response;
+        }
+
+        $data = $this->loginService->login($dto);
 
         return $this->json($data);
     }

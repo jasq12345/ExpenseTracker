@@ -3,6 +3,8 @@
 namespace App\Service\Auth;
 
 use App\Dto\Auth\RefreshTokenDto;
+use App\Entity\User;
+use App\Exception\Auth\TokenGenerationException;
 use Doctrine\ORM\EntityManagerInterface;
 
 /**
@@ -49,8 +51,7 @@ readonly class RefreshTokenManager
             function () use ($dto) {
             $user = $this->refreshTokenService->validateToken($dto->refreshToken);
 
-            $newRefreshToken = $this->tokenGenerator->createRefreshToken($user);
-            $accessToken = $this->tokenGenerator->createAccessToken($user);
+            list($newRefreshToken, $accessToken) = $this->newTokens($user);
 
             $this->refreshTokenService->removeToken($dto->refreshToken);
             $this->em->persist($newRefreshToken);
@@ -60,5 +61,17 @@ readonly class RefreshTokenManager
                 'accessToken'  => $accessToken,
             ];
         });
+    }
+
+    /**
+     * @param User $user
+     * @return array
+     * @throws TokenGenerationException
+     */
+    public function newTokens(User $user): array
+    {
+        $newRefreshToken = $this->tokenGenerator->createRefreshToken($user);
+        $accessToken = $this->tokenGenerator->createAccessToken($user);
+        return array($newRefreshToken, $accessToken);
     }
 }

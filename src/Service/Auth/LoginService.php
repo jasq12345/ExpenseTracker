@@ -2,17 +2,23 @@
 
 namespace App\Service\Auth;
 
+use App\Exception\Auth\TokenGenerationException;
 use App\Repository\UserRepository;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
-class LoginService
+readonly class  LoginService
 {
 
     public function __construct(
-        private readonly UserRepository $userRepository,
-        private readonly UserPasswordHasherInterface $passwordHasher
+        private UserRepository              $userRepository,
+        private UserPasswordHasherInterface $passwordHasher,
+        private RefreshTokenManager         $refreshTokenManager,
     ) {}
+
+    /**
+     * @throws TokenGenerationException
+     */
     public function login($dto): JsonResponse
     {
         $identifier = $dto->identifier;
@@ -27,11 +33,11 @@ class LoginService
             return new JsonResponse(['message' => 'Invalid credentials'], 401);
         }
 
+        list($newRefreshToken, $accessToken) = $this->refreshTokenManager->newTokens($user);
 
-        return new JsonResponse(
-            [
-                'token' => $user->generateAuthToken()
-            ]
-        );
+        return new JsonResponse([
+            'refreshToken' => $newRefreshToken->getToken(),
+            'accessToken' => $accessToken,
+        ]);
     }
 }

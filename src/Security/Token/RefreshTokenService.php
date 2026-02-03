@@ -27,11 +27,13 @@ readonly class RefreshTokenService
     public function createRefreshToken(User $user): RefreshToken
     {
         try {
-            $refreshToken = new RefreshToken();
-            $refreshToken->setToken(bin2hex(random_bytes(64)));
-            $refreshToken->setUser($user);
+            $token = new RefreshToken();
+            $token->setToken(bin2hex(random_bytes(64)));
+            $token->setUser($user);
 
-            return $refreshToken;
+            $this->em->persist($token);
+
+            return $token;
         } catch (RandomException) {
             throw new TokenGenerationException();
         }

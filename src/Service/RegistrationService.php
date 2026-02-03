@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Service\Auth;
+namespace App\Service;
 
 use App\Dto\Auth\RegisterDto;
 use App\Entity\User;

@@ -2,51 +2,36 @@
 
 namespace App\Controller;
 
-use App\Mapper\RefreshTokenMapper;
-use App\Mapper\RegistrationMapper;
+use App\Dto\Auth\RefreshTokenDto;
+use App\Dto\Auth\RegisterDto;
 use App\Security\Token\RefreshTokenService;
-use App\Service\Auth\RegistrationService;
-use App\Validator\DtoValidator;
+use App\Service\RegistrationService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Attribute\MapRequestPayload;
 use Symfony\Component\Routing\Attribute\Route;
 
 final class AuthController extends AbstractController
 {
-
-    public function __construct(
-        private readonly RegistrationMapper  $registrationMapper,
-        private readonly RefreshTokenMapper  $refreshTokenMapper,
-        private readonly RegistrationService $registrationService,
-        private readonly RefreshTokenService $refreshTokenService,
-        private readonly DtoValidator        $validator,
-    ) {}
     #[Route('/auth/register', name: 'token')]
-    public function register(Request $request): JsonResponse
+    public function register(
+        #[MapRequestPayload] RegisterDto $dto,
+        RegistrationService $registrationService,
+    ): JsonResponse
     {
-        $dto = $this->registrationMapper->mapRequestToDto($request);
-
-        if ($response = $this->validator->validate($dto)) {
-            return $response;
-        }
-
-        $this->registrationService->createNewUser($dto);
+        $registrationService->createNewUser($dto);
 
         return $this->json(['message' => 'User created successfully'], 201);
     }
 
     #[Route('/refresh/token', name: 'app_refresh_token', methods: ['POST'])]
-    public function newRefreshToken(Request $request): JsonResponse
+    public function newRefreshToken(
+        #[MapRequestPayload] RefreshTokenDto $dto,
+        RefreshTokenService $refreshTokenService
+    ): JsonResponse
     {
-        $dto = $this->refreshTokenMapper->mapRequestToDto($request);
-
-        if ($response = $this->validator->validate($dto)) {
-            return $response;
-        }
-
-        $data = $this->refreshTokenService->rotateRefreshToken($dto);
-
+        $data = $refreshTokenService->rotateRefreshToken($dto);
 
         return $this->json($data);
     }

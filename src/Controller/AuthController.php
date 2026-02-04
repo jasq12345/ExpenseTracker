@@ -8,13 +8,13 @@ use App\Security\Token\RefreshTokenService;
 use App\Service\RegistrationService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Attribute\MapRequestPayload;
 use Symfony\Component\Routing\Attribute\Route;
 
+#[Route('/api/auth')]
 final class AuthController extends AbstractController
 {
-    #[Route('/auth/register', name: 'token')]
+    #[Route('/register', name: 'token')]
     public function register(
         #[MapRequestPayload] RegisterDto $dto,
         RegistrationService $registrationService,
@@ -25,7 +25,7 @@ final class AuthController extends AbstractController
         return $this->json(['message' => 'User created successfully'], 201);
     }
 
-    #[Route('/refresh/token', name: 'app_refresh_token', methods: ['POST'])]
+    #[Route('/refresh', name: 'app_refresh_token', methods: ['POST'])]
     public function newRefreshToken(
         #[MapRequestPayload] RefreshTokenDto $dto,
         RefreshTokenService $refreshTokenService
@@ -36,8 +36,8 @@ final class AuthController extends AbstractController
         return $this->json($data);
     }
 
-    #[Route('/auth/login', name: 'app_login', methods: ['POST'])]
-    public function login(Request $request): never
+    #[Route('/login', name: 'app_login', methods: ['POST'])]
+    public function login(): never
     {
         throw new \LogicException('Handled by json_login firewall');
     }

@@ -6,9 +6,7 @@ security:
 
     providers:
         app_user_provider:
-            entity:
-                class: App\Entity\User
-                property: email  # lub username
+            id: App\Security\UserProvider
 
     firewalls:
         dev:
@@ -33,7 +31,7 @@ security:
     access_control:
         - { path: ^/api/auth/login, roles: PUBLIC_ACCESS }
         - { path: ^/api/auth/register, roles: PUBLIC_ACCESS }
-        - { path: ^/api/auth/token/refresh, roles: PUBLIC_ACCESS }
+        - { path: ^/api/auth/refresh, roles: PUBLIC_ACCESS }
         - { path: ^/api, roles: ROLE_USER }
 
 # --------------------------

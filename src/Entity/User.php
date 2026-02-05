@@ -51,11 +51,18 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
      */
     #[ORM\OneToMany(targetEntity: RefreshToken::class, mappedBy: 'user', orphanRemoval: true)]
     private Collection $refreshTokens;
+
+    /**
+     * @var Collection<int, Budget>
+     */
+    #[ORM\OneToMany(targetEntity: Budget::class, mappedBy: 'user', orphanRemoval: true)]
+    private Collection $budgets;
     public function __construct()
     {
         $this->categories = new ArrayCollection();
         $this->transactions = new ArrayCollection();
         $this->refreshTokens = new ArrayCollection();
+        $this->budgets = new ArrayCollection();
     }
 
     public function getRoles(): array
@@ -189,6 +196,36 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
             // set the owning side to null (unless already changed)
             if ($refreshToken->getUser() === $this) {
                 $refreshToken->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Budget>
+     */
+    public function getBudgets(): Collection
+    {
+        return $this->budgets;
+    }
+
+    public function addBudget(Budget $budget): static
+    {
+        if (!$this->budgets->contains($budget)) {
+            $this->budgets->add($budget);
+            $budget->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeBudget(Budget $budget): static
+    {
+        if ($this->budgets->removeElement($budget)) {
+            // set the owning side to null (unless already changed)
+            if ($budget->getUser() === $this) {
+                $budget->setUser(null);
             }
         }
 

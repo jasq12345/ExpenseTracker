@@ -44,6 +44,9 @@ class Category
     #[ORM\OneToMany(targetEntity: Transaction::class, mappedBy: 'category')]
     private Collection $transactions;
 
+    #[ORM\ManyToOne]
+    private ?User $owner = null;
+
     public function __construct()
     {
         $this->transactions = new ArrayCollection();
@@ -127,6 +130,18 @@ class Category
                 $transaction->setCategory(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getOwner(): ?User
+    {
+        return $this->owner;
+    }
+
+    public function setOwner(?User $owner): static
+    {
+        $this->owner = $owner;
 
         return $this;
     }

@@ -15,4 +15,9 @@ class CategoryRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Category::class);
     }
+
+    public function isSystemCategory(Category $category): bool
+    {
+        return $category->getOwner() === null;
+    }
 }

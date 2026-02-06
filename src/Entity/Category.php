@@ -26,7 +26,7 @@ class Category
      * ❌ We do NOT expose user's relations
      */
     #[ORM\ManyToOne(inversedBy: 'categories')]
-    #[ORM\JoinColumn(name: 'user_id', nullable: false)]
+    #[ORM\JoinColumn(name: 'user_id', nullable: true)]
     #[Groups(['category:read'])]
     private ?User $user = null;
 
@@ -43,9 +43,6 @@ class Category
      */
     #[ORM\OneToMany(targetEntity: Transaction::class, mappedBy: 'category')]
     private Collection $transactions;
-
-    #[ORM\ManyToOne]
-    private ?User $owner = null;
 
     public function __construct()
     {
@@ -69,7 +66,7 @@ class Category
         return $this;
     }
 
-    public function getUser(): User
+    public function getUser(): ?User
     {
         return $this->user;
     }
@@ -130,18 +127,6 @@ class Category
                 $transaction->setCategory(null);
             }
         }
-
-        return $this;
-    }
-
-    public function getOwner(): ?User
-    {
-        return $this->owner;
-    }
-
-    public function setOwner(?User $owner): static
-    {
-        $this->owner = $owner;
 
         return $this;
     }

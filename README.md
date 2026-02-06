@@ -43,13 +43,13 @@ Follow these phases to implement, test, and maintain the Expense Tracker.
 
 ## Phase 2: Security Voters
 
-- [ ] TransactionVoter.php (VIEW, EDIT, DELETE)
+- [x] TransactionVoter.php (VIEW, EDIT, DELETE, CREATE)
   - Access: Owner or Admin
 
-- [ ] CategoryVoter.php(VIEW, EDIT, DELETE, CREATE)
+- [x] CategoryVoter.php(VIEW, EDIT, DELETE, CREATE)
   - Access: System categories = admin only; personal categories = owner only
 
-- [ ] BudgetVoter.php (VIEW, EDIT, DELETE)
+- [x] BudgetVoter.php (VIEW, EDIT, DELETE)
   - Access: Owner or Admin
 
 ---

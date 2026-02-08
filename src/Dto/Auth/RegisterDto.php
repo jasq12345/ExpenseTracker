@@ -2,9 +2,9 @@
 
 namespace App\Dto\Auth;
 
-use App\Validator\Constraint\StrongPassword;
-use App\Validator\Constraint\UniqueEmail;
-use App\Validator\Constraint\UniqueUsername;
+use App\Validator\Constraint\Register\StrongPassword;
+use App\Validator\Constraint\Register\UniqueEmail;
+use App\Validator\Constraint\Register\UniqueUsername;
 
 final class RegisterDto
 {

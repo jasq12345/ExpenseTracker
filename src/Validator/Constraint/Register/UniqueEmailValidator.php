@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Validator\Constraint;
+namespace App\Validator\Constraint\Register;
 
 use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;

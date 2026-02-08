@@ -2,7 +2,6 @@
 
 namespace App\Validator\Constraint\Transaction;
 
-use App\Validator\Constraint\TransactionNameValidator;
 use Symfony\Component\Validator\Constraint;
 
 #[\Attribute(\Attribute::TARGET_PROPERTY)]

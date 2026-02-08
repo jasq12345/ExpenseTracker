@@ -28,6 +28,7 @@ class Transaction
     #[Groups(['transaction:read'])]
     private ?Category $category = null;
 
+
     #[ORM\ManyToOne(inversedBy: 'transactions')]
     #[ORM\JoinColumn(name: 'user_id', nullable: false)]
     #[Groups(['transaction:read'])]

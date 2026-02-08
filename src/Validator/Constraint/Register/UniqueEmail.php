@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Validator\Constraint;
+namespace App\Validator\Constraint\Register;
 
 use Attribute;
 use Symfony\Component\Validator\Constraint;

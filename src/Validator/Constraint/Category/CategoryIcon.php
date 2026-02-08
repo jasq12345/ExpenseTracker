@@ -1,17 +1,16 @@
 <?php
 
-namespace App\Validator\Constraint;
+namespace App\Validator\Constraint\Category;
 
 use Symfony\Component\Validator\Constraint;
 
 #[\Attribute(\Attribute::TARGET_PROPERTY)]
-class UniqueUsername extends Constraint
+class CategoryIcon extends Constraint
 {
     public string $message = 'Invalid data.';
-    public string $messageConflict = 'Conflict';
 
     public function validatedBy(): string
     {
-        return UniqueUsernameValidator::class;
+        return CategoryIconValidator::class;
     }
 }

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Validator\Constraint;
+namespace App\Validator\Constraint\Register;
 
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\Constraints\NotCompromisedPassword;

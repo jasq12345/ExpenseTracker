@@ -24,13 +24,13 @@ class Transaction
     private ?string $name = null;
 
     #[ORM\ManyToOne(inversedBy: 'transactions')]
-    #[ORM\JoinColumn(name: 'category_id', nullable: true, onDelete: "SET NULL")]
+    #[ORM\JoinColumn(name: 'category_id', nullable: true, onDelete: 'SET NULL')]
     #[Groups(['transaction:read'])]
     private ?Category $category = null;
 
 
     #[ORM\ManyToOne(inversedBy: 'transactions')]
-    #[ORM\JoinColumn(name: 'user_id', nullable: false)]
+    #[ORM\JoinColumn(name: 'user_id', nullable: false, onDelete: 'CASCADE')]
     #[Groups(['transaction:read'])]
     private ?User $user = null;
 

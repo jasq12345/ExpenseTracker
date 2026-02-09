@@ -24,7 +24,7 @@ class Budget
     private ?int $year = null;
 
     #[ORM\ManyToOne(inversedBy: 'budgets')]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(name: 'user_id', nullable: false, onDelete: 'CASCADE')]
     private ?User $user = null;
 
     public function getId(): ?int

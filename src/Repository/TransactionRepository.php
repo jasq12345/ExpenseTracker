@@ -19,6 +19,6 @@ class TransactionRepository extends ServiceEntityRepository
 
     public function findByUserAndPeriod(User $user, ?int $year, ?int $month): array
     {
-
+        return [];
     }
 }

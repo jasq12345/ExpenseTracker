@@ -24,7 +24,7 @@ class RefreshToken
     private \DateTimeImmutable $expiresAt;
 
     #[ORM\ManyToOne(inversedBy: 'refreshTokens')]
-    #[ORM\JoinColumn(name: "user_id", nullable: false)]
+    #[ORM\JoinColumn(name: "user_id", nullable: false, onDelete: 'CASCADE')]
     #[Groups(['refreshToken:read'])]
     private ?User $user = null;
 

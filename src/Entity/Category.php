@@ -26,7 +26,7 @@ class Category
      * ❌ We do NOT expose user's relations
      */
     #[ORM\ManyToOne(inversedBy: 'categories')]
-    #[ORM\JoinColumn(name: 'user_id', nullable: true)]
+    #[ORM\JoinColumn(name: 'user_id', nullable: true, onDelete: 'CASCADE')]
     #[Groups(['category:read'])]
     private ?User $user = null;
 

@@ -141,7 +141,10 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
     public function removeCategory(Category $category): static
     {
         if($this->categories->removeElement($category)){
-            $category->setUser(null);
+            // set the owning side to null (unless already changed)
+            if ($category->getUser() === $this) {
+                $category->setUser(null);
+            }
         }
         return $this;
     }
@@ -163,15 +166,13 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
 
         return $this;
     }
+
     public function removeTransaction(Transaction $transaction): static
     {
-        if ($this->transactions->removeElement($transaction)) {
-            $transaction->setUser(null);
-        }
+    	$this->transactions->removeElement($transaction);
 
-        return $this;
+    	return $this;
     }
-
     /**
      * @return Collection<int, RefreshToken>
      */
@@ -192,14 +193,9 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
 
     public function removeRefreshToken(RefreshToken $refreshToken): static
     {
-        if ($this->refreshTokens->removeElement($refreshToken)) {
-            // set the owning side to null (unless already changed)
-            if ($refreshToken->getUser() === $this) {
-                $refreshToken->setUser(null);
-            }
-        }
+    	$this->refreshTokens->removeElement($refreshToken);
 
-        return $this;
+    	return $this;
     }
 
     /**
@@ -222,12 +218,7 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
 
     public function removeBudget(Budget $budget): static
     {
-        if ($this->budgets->removeElement($budget)) {
-            // set the owning side to null (unless already changed)
-            if ($budget->getUser() === $this) {
-                $budget->setUser(null);
-            }
-        }
+        $this->budgets->removeElement($budget);
 
         return $this;
     }

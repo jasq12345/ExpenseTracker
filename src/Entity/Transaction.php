@@ -42,11 +42,11 @@ class Transaction
     #[Groups(['transaction:read'])]
     private ?int $amount = null;
 
-    #[ORM\Column]
+    #[ORM\Column(nullable: false)]
     #[Groups(['transaction:read'])]
     private ?\DateTime $date = null;
 
-    #[ORM\Column]
+    #[ORM\Column(nullable: false)]
     #[Groups(['transaction:read'])]
     private ?\DateTimeImmutable $createdAt;
 

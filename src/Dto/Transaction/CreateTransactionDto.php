@@ -8,6 +8,7 @@ use App\Validator\Constraint\Transaction\TransactionCategoryId;
 use App\Validator\Constraint\Transaction\TransactionDescription;
 use App\Validator\Constraint\Transaction\TransactionName;
 use App\Validator\Constraint\Transaction\TransactionPrice;
+use Symfony\Component\Validator\Constraints as Assert;
 
 class CreateTransactionDto
 {
@@ -23,6 +24,10 @@ class CreateTransactionDto
 
         #[TransactionCategoryId]
         public ?int $categoryId = null,
+
+        // add a custom constraint later to check the date
+        #[Assert\NotBlank]
+        public \DateTime $date,
 
         #[TransactionDescription]
         public ?string $description = null,

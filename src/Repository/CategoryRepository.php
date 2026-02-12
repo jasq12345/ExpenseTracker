@@ -18,6 +18,6 @@ class CategoryRepository extends ServiceEntityRepository
 
     public function isSystemCategory(Category $category): bool
     {
-        return $category->getOwner() === null;
+        return $category->getUser() === null;
     }
 }

@@ -17,6 +17,9 @@ class Budget
     #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 2)]
     private ?string $limitAmount = null;
 
+    #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 2)]
+    private ?string $currentAmount = null;
+
     #[ORM\Column(type: Types::SMALLINT)]
     private ?int $month = null;
 
@@ -40,6 +43,18 @@ class Budget
     public function setLimitAmount(string $limitAmount): static
     {
         $this->limitAmount = $limitAmount;
+
+        return $this;
+    }
+
+    public function getCurrentAmount(): ?string
+    {
+        return $this->currentAmount;
+    }
+
+    public function setCurrentAmount(string $currentAmount): static
+    {
+        $this->currentAmount = $currentAmount;
 
         return $this;
     }

@@ -6,6 +6,7 @@ use App\Entity\Budget;
 use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use DomainException;
 
 /**
  * @extends ServiceEntityRepository<Budget>
@@ -28,5 +29,21 @@ class BudgetRepository extends ServiceEntityRepository
             ->setParameter('year', $year)
             ->getQuery()
             ->getResult();
+    }
+
+    public function existsCurrentBudget(User $user): bool
+    {
+        return $this->findOneBy(['user' => $user, 'month' => (int) date('m'), 'year' => (int) date('Y')]) !== null;
+    }
+
+    public function findCurrentBudgetByUser(User $user): ?Budget
+    {
+        $budget = $this->findOneBy(['user' => $user, 'month' => (int) date('m'), 'year' => (int) date('Y')]);
+
+        if (!$budget) {
+            throw new DomainException('Budget not found.');
+        }
+
+        return $budget;
     }
 }

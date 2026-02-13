@@ -18,18 +18,24 @@ class Budget
     private ?string $limitAmount = null;
 
     #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 2)]
-    private ?string $currentAmount = null;
+    private ?string $currentAmount;
 
     #[ORM\Column(type: Types::SMALLINT)]
-    private ?int $month = null;
+    private ?int $month;
 
     #[ORM\Column(type: Types::SMALLINT)]
-    private ?int $year = null;
+    private ?int $year;
 
     #[ORM\ManyToOne(inversedBy: 'budgets')]
     #[ORM\JoinColumn(name: 'user_id', nullable: false, onDelete: 'CASCADE')]
     private ?User $user = null;
 
+    public function __construct()
+    {
+        $this->month = (int) date('m');
+        $this->year = (int) date('Y');
+        $this->currentAmount = 0.00;
+    }
     public function getId(): ?int
     {
         return $this->id;

@@ -113,6 +113,12 @@ class Category
     public function addTransaction(Transaction $transaction): static
     {
         if (!$this->transactions->contains($transaction)) {
+            // Remove from the old category first
+            $oldCategory = $transaction->getCategory();
+            if ($oldCategory && $oldCategory !== $this) {
+                $oldCategory->transactions->removeElement($transaction);
+            }
+
             $this->transactions->add($transaction);
             $transaction->setCategory($this);
         }

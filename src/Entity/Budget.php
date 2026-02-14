@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Enum\BudgetPolicyEnum;
 use App\Repository\BudgetRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
@@ -29,6 +30,12 @@ class Budget
     #[ORM\ManyToOne(inversedBy: 'budgets')]
     #[ORM\JoinColumn(name: 'user_id', nullable: false, onDelete: 'CASCADE')]
     private ?User $user = null;
+
+    #[ORM\Column(type: Types::STRING, enumType: BudgetPolicyEnum::class)]
+    private ?BudgetPolicyEnum $policy = null;
+
+    #[ORM\Column(type: Types::SMALLINT, nullable: true)]
+    private ?int $warningThreshold = null;
 
     public function __construct()
     {
@@ -97,6 +104,30 @@ class Budget
     public function setUser(?User $user): static
     {
         $this->user = $user;
+
+        return $this;
+    }
+
+    public function getPolicy(): ?BudgetPolicyEnum
+    {
+        return $this->policy;
+    }
+
+    public function setPolicy(BudgetPolicyEnum $policy): static
+    {
+        $this->policy = $policy;
+
+        return $this;
+    }
+
+    public function getWarningThreshold(): ?int
+    {
+        return $this->warningThreshold;
+    }
+
+    public function setWarningThreshold(?int $warningThreshold): static
+    {
+        $this->warningThreshold = $warningThreshold;
 
         return $this;
     }

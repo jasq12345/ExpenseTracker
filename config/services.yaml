@@ -20,19 +20,6 @@ services:
             - '../src/Entity/'
             - '../src/Kernel.php'
 
-    # ----------------------------------
-    # Auto-tag hydration resolvers
-    # ----------------------------------
-    _instanceof:
-        App\Service\Hydration\Resolvers\HydrationResolverInterface:
-            tags: ['hydration.resolver']
-
-    # ----------------------------------
-    # Explicit wiring for tagged resolvers
-    # ----------------------------------
-    App\Service\Hydration\EntityHydrationService:
-        arguments:
-            $resolvers: !tagged_iterator hydration.resolver
 
     # ----------------------------------
     # Event listeners

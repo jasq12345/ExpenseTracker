@@ -4,7 +4,13 @@ namespace App\Enum;
 
 enum BudgetPolicyEnum: string
 {
-    Case STRICT = 'strict';
-    Case FLEXIBLE = 'lenient';
+    case STRICT = 'strict';
+    case FLEXIBLE = 'flexible';
     case UNLIMITED = 'unlimited';
+
+    public function requiresWarningThreshold(): bool
+    {
+        return $this !== self::UNLIMITED;
+    }
+
 }

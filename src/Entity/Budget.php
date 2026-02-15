@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Enum\BudgetPolicyEnum;
 use App\Repository\BudgetRepository;
+use App\ValueObject\BudgetPolicy;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -31,17 +32,51 @@ class Budget
     #[ORM\JoinColumn(name: 'user_id', nullable: false, onDelete: 'CASCADE')]
     private ?User $user = null;
 
-    #[ORM\Column(type: Types::STRING, enumType: BudgetPolicyEnum::class)]
-    private ?BudgetPolicyEnum $policy = null;
+    #[Orm\Embedded(class: BudgetPolicy::class)]
+    private BudgetPolicy $budgetPolicy;
 
-    #[ORM\Column(type: Types::SMALLINT, nullable: true)]
-    private ?int $warningThreshold = null;
+    #[ORM\Column(type: 'decimal', precision: 10, scale: 2)]
+    private ?string $spentAmount;
 
     public function __construct()
     {
+        $this->budgetPolicy = BudgetPolicy::strict();
         $this->month = (int) date('m');
         $this->year = (int) date('Y');
         $this->currentAmount = 0.00;
+        $this->spentAmount = 0.00;
+    }
+    public function getSpentAmount(): string
+    {
+        return $this->spentAmount;
+    }
+
+    public function setSpentAmount(string $spentAmount): self
+    {
+        $this->spentAmount = $spentAmount;
+        return $this;
+    }
+
+    public function addExpense(float $amount): self
+    {
+        $this->spentAmount += $amount;
+        $this->currentAmount -= $amount;
+        return $this;
+    }
+
+    public function addIncome(float $amount): self
+    {
+        $this->currentAmount += $amount;
+        return $this;
+    }
+    public function getBudgetPolicy(): BudgetPolicy
+    {
+        return $this->budgetPolicy;
+    }
+
+    public function setBudgetPolicy(BudgetPolicy $config): void
+    {
+        $this->budgetPolicy = $config;
     }
     public function getId(): ?int
     {
@@ -104,30 +139,6 @@ class Budget
     public function setUser(?User $user): static
     {
         $this->user = $user;
-
-        return $this;
-    }
-
-    public function getPolicy(): ?BudgetPolicyEnum
-    {
-        return $this->policy;
-    }
-
-    public function setPolicy(BudgetPolicyEnum $policy): static
-    {
-        $this->policy = $policy;
-
-        return $this;
-    }
-
-    public function getWarningThreshold(): ?int
-    {
-        return $this->warningThreshold;
-    }
-
-    public function setWarningThreshold(?int $warningThreshold): static
-    {
-        $this->warningThreshold = $warningThreshold;
 
         return $this;
     }

@@ -27,3 +27,6 @@ services:
     App\EventListener\ExceptionListener:
         tags:
             - { name: kernel.event_listener, event: kernel.exception }
+
+    App\Service\NotificationServiceInterface:
+        alias: App\Service\LoggerNotificationService

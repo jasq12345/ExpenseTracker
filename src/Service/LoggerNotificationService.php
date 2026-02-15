@@ -4,8 +4,9 @@ namespace App\Service;
 
 use App\Entity\User;
 use App\Service\NotificationServiceInterface;
+use Psr\Log\LoggerInterface;
 
-class LoggerNotificationService implements NotificationServiceInterface
+readonly class LoggerNotificationService implements NotificationServiceInterface
 {
 
     public function __construct(

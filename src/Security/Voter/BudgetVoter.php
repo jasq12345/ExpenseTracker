@@ -10,6 +10,8 @@ final class BudgetVoter extends AbstractOwnerVoter
 {
     public const string VIEW = 'BUDGET_VIEW';
     public const string CREATE = 'BUDGET_CREATE';
+    public const string EDIT = 'BUDGET_EDIT';
+
 
     protected function getEntityClass(): string { return Budget::class; }
     protected function getAttributePolicyMap(): array
@@ -17,6 +19,7 @@ final class BudgetVoter extends AbstractOwnerVoter
         return [
             self::VIEW => AccessPolicyEnum::PUBLIC,
             self::CREATE => AccessPolicyEnum::PUBLIC,
+            self::EDIT => AccessPolicyEnum::OWNER,
         ];
     }
 

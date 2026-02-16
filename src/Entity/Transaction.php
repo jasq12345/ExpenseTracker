@@ -28,7 +28,6 @@ class Transaction
     #[Groups(['transaction:read'])]
     private ?Category $category = null;
 
-
     #[ORM\ManyToOne(inversedBy: 'transactions')]
     #[ORM\JoinColumn(name: 'user_id', nullable: false, onDelete: 'CASCADE')]
     #[Groups(['transaction:read'])]
@@ -41,11 +40,6 @@ class Transaction
     #[ORM\Column(type: Types::INTEGER)]
     #[Groups(['transaction:read'])]
     private ?int $amount = null;
-
-    #[ORM\Column(nullable: false)]
-    #[Groups(['transaction:read'])]
-    private ?\DateTime $date = null;
-
     #[ORM\Column(nullable: false)]
     #[Groups(['transaction:read'])]
     private ?\DateTimeImmutable $createdAt;
@@ -127,27 +121,6 @@ class Transaction
 
         return $this;
     }
-
-    public function getDate(): \DateTime
-    {
-        return $this->date;
-    }
-
-    public function setDate(\DateTime|string $date): self
-    {
-        try{
-            if (is_string($date)) {
-                $date = new \DateTime($date);
-            }
-        } catch (Exception){
-            throw new InvalidArgumentException("Invalid date format");
-        }
-
-
-        $this->date = $date;
-        return $this;
-    }
-
 
     public function getCreatedAt(): ?\DateTimeImmutable
     {

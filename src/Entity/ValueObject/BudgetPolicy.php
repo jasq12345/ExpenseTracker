@@ -1,6 +1,6 @@
 <?php
 
-namespace App\ValueObject;
+namespace App\Entity\ValueObject;
 
 use App\Enum\BudgetPolicyEnum;
 use Doctrine\DBAL\Types\Types;

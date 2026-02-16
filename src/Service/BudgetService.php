@@ -5,8 +5,8 @@ namespace App\Service;
 use App\Dto\Budget\CreateBudgetDto;
 use App\Dto\Budget\UpdateBudgetDto;
 use App\Entity\Budget;
+use App\Entity\ValueObject\BudgetPolicy;
 use App\Repository\BudgetRepository;
-use App\ValueObject\BudgetPolicy;
 use Doctrine\ORM\EntityManagerInterface;
 use LogicException;
 

@@ -25,10 +25,6 @@ class CreateTransactionDto
         #[TransactionCategoryId]
         public ?int $categoryId = null,
 
-        // add a custom constraint later to check the date
-        #[Assert\NotBlank]
-        public \DateTime $date,
-
         #[TransactionDescription]
         public ?string $description = null,
 

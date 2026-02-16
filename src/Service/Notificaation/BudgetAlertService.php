@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Service;
+namespace App\Service\Notificaation;
 
 use App\Entity\Budget;
 use App\Enum\BudgetThresholdEnum;

@@ -27,7 +27,6 @@ readonly class TransactionService
         $transaction->setName($dto->name);
         $transaction->setAmount($dto->amount);
         $transaction->setPrice($dto->price);
-        $transaction->setDate($dto->date);
         $transaction->setDescription($dto->description);
         $transaction->setType($dto->type);
 

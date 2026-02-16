@@ -1,9 +1,8 @@
 <?php
 
-namespace App\Service;
+namespace App\Service\Notificaation;
 
 use App\Entity\User;
-use App\Service\NotificationServiceInterface;
 use Psr\Log\LoggerInterface;
 
 readonly class LoggerNotificationService implements NotificationServiceInterface

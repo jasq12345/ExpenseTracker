@@ -5,7 +5,9 @@ namespace App\Repository;
 use App\Entity\Category;
 use App\Entity\Transaction;
 use App\Entity\User;
+use App\Enum\TransactionType;
 use DateTime;
+use DateTimeImmutable;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -19,51 +21,57 @@ class TransactionRepository extends ServiceEntityRepository
         parent::__construct($registry, Transaction::class);
     }
 
-    public function findByPeriod(User $user, DateTime $start, DateTime $end): array
+    public function findByPeriod(User $user, ?DateTimeImmutable $start, ?DateTimeImmutable $end): array
     {
         $qb = $this->createQueryBuilder('t');
 
         $qb->andWhere($qb->expr()->eq('t.user', ':user'))
-            ->andWhere($qb->expr()->between('t.date', ':start', ':end'))
             ->setParameter('user', $user)
-            ->setParameter('start', $start)
-            ->setParameter('end', $end)
-            ->orderBy('t.date', 'DESC');
+            ->orderBy('t.createdAt', 'DESC');
+
+        if ($start !== null) {
+            $qb->andWhere($qb->expr()->gte('t.createdAt', ':start'))
+                ->setParameter('start', $start);
+        }
+
+        if ($end !== null) {
+            $qb->andWhere($qb->expr()->lte('t.createdAt', ':end'))
+                ->setParameter('end', $end);
+        }
 
         return $qb->getQuery()->getResult();
     }
 
-    public function getTotalByPeriod(User $user, DateTime $start, DateTime $end): float
-    {
+    public function getTotalByPeriodAndType(
+        User $user,
+        TransactionType $type,
+        ?DateTimeImmutable $start,
+        ?DateTimeImmutable $end,
+        ?array $categories = null
+    ): float {
         $qb = $this->createQueryBuilder('t');
 
-        $qb->select('SUM(t.price * t.amount) as total')
+        $qb->select('COALESCE(SUM(t.price * t.amount), 0) as total')
             ->andWhere($qb->expr()->eq('t.user', ':user'))
-            ->andWhere($qb->expr()->between('t.date', ':start', ':end'))
+            ->andWhere($qb->expr()->eq('t.type', ':type'))
             ->setParameter('user', $user)
-            ->setParameter('start', $start)
-            ->setParameter('end', $end);
+            ->setParameter('type', $type);
 
-        $result = $qb->getQuery()->getSingleScalarResult();
+        if ($start !== null) {
+            $qb->andWhere($qb->expr()->gte('t.createdAt', ':start'))
+                ->setParameter('start', $start);
+        }
 
-        return $result !== null ? (float) $result : 0.0;
-    }
+        if ($end !== null) {
+            $qb->andWhere($qb->expr()->lte('t.createdAt', ':end'))
+                ->setParameter('end', $end);
+        }
 
-    public function getTotalByPeriodAndCategory(User $user, DateTime $start, DateTime $end, Category $category): float
-    {
-        $qb = $this->createQueryBuilder('t');
+        if ($categories !== null && count($categories) > 0) {
+            $qb->andWhere($qb->expr()->in('t.category', ':categories'))
+                ->setParameter('categories', $categories);
+        }
 
-        $qb->select('SUM(t.price * t.amount) as total')
-            ->andWhere($qb->expr()->eq('t.user', ':user'))
-            ->andWhere($qb->expr()->eq('t.category', ':category'))
-            ->andWhere($qb->expr()->between('t.date', ':start', ':end'))
-            ->setParameter('user', $user)
-            ->setParameter('category', $category)
-            ->setParameter('start', $start)
-            ->setParameter('end', $end);
-
-        $result = $qb->getQuery()->getSingleScalarResult();
-
-        return $result !== null ? (float) $result : 0.0;
+        return (float) $qb->getQuery()->getSingleScalarResult();
     }
 }

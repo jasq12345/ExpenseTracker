@@ -2,9 +2,8 @@
 
 namespace App\Entity;
 
-use App\Enum\BudgetPolicyEnum;
+use App\Entity\ValueObject\BudgetPolicy;
 use App\Repository\BudgetRepository;
-use App\ValueObject\BudgetPolicy;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 

@@ -49,4 +49,11 @@ readonly class CategoryService
         $user->removeCategory($category);
         $this->em->flush();
     }
+
+    public function getAll(): array
+    {
+        $user = $this->userProvider->getUser();
+        
+        return $user->getCategories()->toArray();
+    }
 }

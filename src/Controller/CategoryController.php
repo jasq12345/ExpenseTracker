@@ -17,6 +17,9 @@ final class CategoryController extends AbstractController
     #[Route('/categories', name: 'app_category_get_all', methods: ['GET'])]
     public function getAllCategories(CategoryRepository $repository): JsonResponse
     {
-        return new JsonResponse($repository->findAll());
+        $categories = $service->getAll();
+        
+        return $this->json($categories, 200, [], ['groups' => $this->getReadGroup()]);
+
     }
 }

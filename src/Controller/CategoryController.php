@@ -2,31 +2,58 @@
 
 namespace App\Controller;
 
-use App\Entity\Category;
+use App\Dto\Category\CreateCategoryDto;
 use App\Repository\CategoryRepository;
+use App\Service\CategoryService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\HttpKernel\Attribute\MapRequestPayload;
 
-final class CategoryController extends AbstractController
+#[Route('/categories')]
+class CategoryController extends AbstractController
 {
-    protected function getReadGroup(): string
+    #[Route('', methods: ['GET'])]
+    public function list(CategoryRepository $repository): JsonResponse
     {
-        return 'category:read';
+        return $this->json(
+            $repository->findAll(),
+            Response::HTTP_OK,
+            [],
+            ['groups' => ['category:read']]
+        );
     }
 
-    #[Route('/categories', name: 'app_category_get_all', methods: ['GET'])]
-    public function getAllCategories(CategoryRepository $repository): JsonResponse
+    #[Route('/{id}', requirements: ['id' => '\d+'], methods: ['GET'])]
+    public function getOne(CategoryRepository $repository, int $id): JsonResponse
     {
-        $categories = $repository->findAll();
+        $category = $repository->find($id);
 
-        return $this->json($categories, context: ['groups' => $this->getReadGroup()]);
+        if (!$category) {
+            throw $this->createNotFoundException();
+        }
+
+        return $this->json(
+            $category,
+            Response::HTTP_OK,
+            [],
+            ['groups' => ['category:read']]
+        );
     }
 
-    #[Route('/categories/{id}', name: 'app_category_get_one', methods: ['GET'])]
-    public function getCategory(Category $category): JsonResponse
-    {
-        return $this->json($category, context: ['groups' => $this->getReadGroup()]);
-    }
+    #[Route('', methods: ['POST'])]
+    public function create(
+        #[MapRequestPayload] CreateCategoryDto $dto,
+        CategoryService $service
+    ): JsonResponse {
+        $category = $service->create($dto);
 
+        return $this->json(
+            $category,
+            Response::HTTP_CREATED,
+            [],
+            ['groups' => ['category:read']]
+        );
+    }
 }

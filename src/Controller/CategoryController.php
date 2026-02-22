@@ -56,4 +56,19 @@ class CategoryController extends AbstractController
             ['groups' => ['category:read']]
         );
     }
+
+    #[Route('/{id}', methods: ['DELETE'])]
+    public function delete(CategoryRepository $repository, CategoryService $service, int $id): JsonResponse
+    {
+        $category = $repository->find($id);
+
+        $service->delete($category);
+
+        return $this->json(
+            $category,
+            Response::HTTP_OK,
+            [],
+            ['groups' => ['category:read']]
+        );
+    }
 }

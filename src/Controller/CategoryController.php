@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Dto\Category\CreateCategoryDto;
+use App\Dto\Category\UpdateCategoryDto;
 use App\Repository\CategoryRepository;
 use App\Service\CategoryService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -63,6 +64,25 @@ class CategoryController extends AbstractController
         $category = $repository->find($id);
 
         $service->delete($category);
+
+        return $this->json(
+            $category,
+            Response::HTTP_OK,
+            [],
+            ['groups' => ['category:read']]
+        );
+    }
+    #[Route('/{id}', methods: ['PUT'])]
+    public function update(
+        #[MapRequestPayload] UpdateCategoryDto $dto,
+        CategoryService $service,
+        CategoryRepository $repository,
+        int $id
+    ): JsonResponse
+    {
+        $category = $repository->find($id);
+
+        $service->update($category, $dto);
 
         return $this->json(
             $category,

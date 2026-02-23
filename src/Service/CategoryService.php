@@ -3,6 +3,7 @@
 namespace App\Service;
 
 use App\Dto\Category\CreateCategoryDto;
+use App\Dto\Category\UpdateCategoryDto;
 use App\Entity\Category;
 use Doctrine\ORM\EntityManagerInterface;
 
@@ -31,7 +32,7 @@ readonly class CategoryService
         return $category;
     }
 
-    public function update(Category $category, CreateCategoryDto $dto): Category
+    public function update(Category $category, UpdateCategoryDto $dto): Category
     {
         $category->setName($dto->name);
         $category->setIcon($dto->icon);

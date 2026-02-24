@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Repository\TransactionRepository;
+use App\Service\TransactionService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
@@ -22,7 +23,20 @@ final class TransactionController extends AbstractController
             $repository->findAll(),
             Response::HTTP_OK,
             [],
-            ['groups' => ['category:read']]
+            ['groups' => ['transaction:read']]
+        );
+    }
+
+    #[Route('/{id}', requirements: ['id' => '\d+'], methods: ['GET'])]
+    public function getOne(TransactionRepository $repository, int $id): JsonResponse
+    {
+        $transaction = $repository->find($id);
+
+        return $this->json(
+            $transaction,
+            Response::HTTP_OK,
+            [],
+            ['groups' => ['transaction:read']]
         );
     }
 }

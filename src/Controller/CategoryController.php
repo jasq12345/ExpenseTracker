@@ -72,7 +72,7 @@ class CategoryController extends AbstractController
             ['groups' => ['category:read']]
         );
     }
-    #[Route('/{id}', methods: ['PUT'])]
+    #[Route('/{id}', methods: ['PUT', 'PATCH'])]
     public function update(
         #[MapRequestPayload] UpdateCategoryDto $dto,
         CategoryService $service,

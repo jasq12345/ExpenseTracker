@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Dto\Transaction\CreateTransactionDto;
+use App\Dto\Transaction\UpdateTransactionDto;
 use App\Repository\TransactionRepository;
 use App\Service\TransactionService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -58,4 +59,23 @@ final class TransactionController extends AbstractController
         );
     }
 
+
+    public function update(
+        #[MapRequestPayload] UpdateTransactionDto $dto,
+        TransactionService $service,
+        TransactionRepository $repository,
+        int $id
+    )
+    {
+        $transaction = $repository->find($id);
+
+        $service->update($transaction, $dto);
+
+        return $this->json(
+            $transaction,
+            Response::HTTP_OK,
+            [],
+            ['groups' => ['transaction:read']]
+        );
+    }
 }

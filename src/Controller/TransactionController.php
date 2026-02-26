@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Dto\Transaction\CreateTransactionDto;
+use App\Dto\Transaction\UpdateTransactionDto;
 use App\Repository\TransactionRepository;
 use App\Service\TransactionService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;

@@ -3,11 +3,9 @@
 namespace App\Controller;
 
 use App\Dto\Budget\CreateBudgetDto;
-use App\Dto\Transaction\CreateTransactionDto;
+use App\Dto\Budget\UpdateBudgetDto;
 use App\Repository\BudgetRepository;
-use App\Repository\TransactionRepository;
 use App\Service\BudgetService;
-use App\Service\TransactionService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
@@ -31,10 +29,10 @@ class BudgetController extends AbstractController
     #[Route('/{id}', requirements: ['id' => '\d+'], methods: ['GET'])]
     public function getOne(BudgetRepository $repository, int $id): JsonResponse
     {
-        $transaction = $repository->find($id);
+        $budget = $repository->find($id);
 
         return $this->json(
-            $transaction,
+            $budget,
             Response::HTTP_OK,
             [],
             ['groups' => ['budget:read']]
@@ -47,10 +45,26 @@ class BudgetController extends AbstractController
         BudgetService $service
     ): JsonResponse
     {
-        $transaction = $service->create($dto);
+        $budget = $service->create($dto);
 
         return $this->json(
-            $transaction,
+            $budget,
+            Response::HTTP_OK,
+            [],
+            ['groups' => ['budget:read']]
+        );
+    }
+
+    #[Route('/', methods: ['PUT', 'PATCH'])]
+    public function update(
+        #[MapRequestPayload] UpdateBudgetDto $dto,
+        BudgetService $service,
+    ): JsonResponse
+    {
+        $budget = $service->update($dto);
+
+        return $this->json(
+            $budget,
             Response::HTTP_OK,
             [],
             ['groups' => ['budget:read']]

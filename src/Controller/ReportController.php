@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Dto\Report\MonthlyDto;
+use App\Dto\Report\WeeklyDto;
 use App\Dto\Report\YearlyDto;
 use App\Service\ReportService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -34,6 +35,20 @@ class ReportController extends AbstractController
     ): JsonResponse
     {
         $report = $service->getYearlyReport($dto->year, $dto->categories, $dto->filterType);
+
+        return $this->json($report);
+    }
+
+    /**
+     * @throws \DateMalformedStringException
+     */
+    #[Route('/weekly', name: 'app_report_weekly', methods: ['GET'])]
+    public function weeklyReport(
+        #[MapRequestPayload] WeeklyDto $dto,
+        ReportService $service
+    ): JsonResponse
+    {
+        $report = $service->getWeeklyReport($dto->categories, $dto->filterType);
 
         return $this->json($report);
     }

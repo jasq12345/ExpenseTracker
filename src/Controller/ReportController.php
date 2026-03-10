@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Dto\Report\DailyDto;
 use App\Dto\Report\MonthlyDto;
 use App\Dto\Report\WeeklyDto;
 use App\Dto\Report\YearlyDto;
@@ -49,6 +50,17 @@ class ReportController extends AbstractController
     ): JsonResponse
     {
         $report = $service->getWeeklyReport($dto->categories, $dto->filterType);
+
+        return $this->json($report);
+    }
+
+    #[Route('/daily', name: 'app_report_daily', methods: ['GET'])]
+    public function dailyReport(
+        #[MapRequestPayload] DailyDto $dto,
+        ReportService $service
+    ): JsonResponse
+    {
+        $report = $service->getDailyReport($dto->categories, $dto->filterType);
 
         return $this->json($report);
     }

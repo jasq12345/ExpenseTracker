@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Dto\Report\AllTimeDto;
 use App\Dto\Report\DailyDto;
 use App\Dto\Report\MonthlyDto;
 use App\Dto\Report\WeeklyDto;
@@ -62,6 +63,16 @@ class ReportController extends AbstractController
     {
         $report = $service->getDailyReport($dto->categories, $dto->filterType);
 
+        return $this->json($report);
+    }
+
+    #[Route('/all-time', name: 'app_report_all_time', methods: ['GET'])]
+    public function allTimeReport(
+        #[MapRequestPayload] AllTimeDto $dto,
+        ReportService $service
+    ): JsonResponse
+    {
+        $report = $service->getAllTimeReport($dto->categories, $dto->filterType);
         return $this->json($report);
     }
 }

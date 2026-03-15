@@ -45,6 +45,10 @@ readonly class BudgetService
 
         $budget = $this->budgetRepository->findCurrentBudgetByUser($user);
 
+        if(!$budget) {
+            throw new LogicException('Budget for this month not found.');
+        }
+
         $budget->setLimitAmount($dto->limitAmount);
         $budget->setBudgetPolicy(new BudgetPolicy($dto->policy, $dto->warningThreshold));
 

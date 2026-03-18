@@ -18,10 +18,12 @@ final class ExceptionListener
         $exception = $event->getThrowable();
 
         $statusCode = match (true) {
+            $exception instanceof InvalidJsonException,
+                $exception instanceof AssociationInvalidValueException,
+                $exception instanceof AssociationNullException => 400,
             $exception instanceof RefreshTokenExpiredException => 401,
             $exception instanceof RefreshTokenNotFoundException => 404,
-            $exception instanceof InvalidJsonException, $exception instanceof AssociationInvalidValueException,
-                $exception instanceof AssociationNullException => 400,
+            $exception instanceof \DomainException => 422,
             $exception instanceof HttpExceptionInterface => $exception->getStatusCode(),
             default => 500,
         };

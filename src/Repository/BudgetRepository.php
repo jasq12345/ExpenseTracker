@@ -33,17 +33,19 @@ class BudgetRepository extends ServiceEntityRepository
 
     public function existsCurrentBudget(User $user): bool
     {
-        return $this->findOneBy(['user' => $user, 'month' => (int) date('m'), 'year' => (int) date('Y')]) !== null;
+        return $this->findOneBy([
+            'user' => $user,
+            'month' => (int) date('m'),
+            'year' => (int) date('Y')
+        ]) !== null;
     }
 
     public function findCurrentBudgetByUser(User $user): ?Budget
     {
-        $budget = $this->findOneBy(['user' => $user, 'month' => (int) date('m'), 'year' => (int) date('Y')]);
-
-        if (!$budget) {
-            throw new DomainException('Budget not found.');
-        }
-
-        return $budget;
+        return $this->findOneBy([
+            'user' => $user,
+            'month' => (int) date('m'),
+            'year' => (int) date('Y')
+        ]);
     }
 }

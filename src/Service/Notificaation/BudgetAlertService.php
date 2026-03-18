@@ -10,7 +10,7 @@ readonly class BudgetAlertService
 {
     public function __construct(
         private BudgetGuard $budgetGuard,
-        private LoggerNotificationService $notificationService
+        private NotificationServiceInterface $notificationService
     ) {}
 
     public function checkAndAlert(Budget $budget): void

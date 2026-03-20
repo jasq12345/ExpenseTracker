@@ -23,17 +23,11 @@ class CategoryRepository extends ServiceEntityRepository
         return $category->getUser() === null;
     }
 
-    public function findOneByIdAndUser(int $id, User $user): Category
+    public function findOneByIdAndUser(int $id, User $user): ?Category
     {
-        $category = $this->findOneBy([
+        return $this->findOneBy([
             'id' => $id,
             'user' => $user,
         ]);
-
-        if (!$category) {
-            throw new DomainException('Category not found.');
-        }
-
-        return $category;
     }
 }

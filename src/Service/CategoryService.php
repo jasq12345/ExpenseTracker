@@ -5,13 +5,17 @@ namespace App\Service;
 use App\Dto\Category\CreateCategoryDto;
 use App\Dto\Category\UpdateCategoryDto;
 use App\Entity\Category;
+use App\Entity\User;
+use App\Repository\CategoryRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use DomainException;
 
 readonly class CategoryService
 {
     public function __construct(
         private UserProviderService $userProvider,
         private EntityManagerInterface $em,
+        private CategoryRepository $categoryRepository,
     ) {}
 
     public function create(CreateCategoryDto $dto): Category
@@ -49,5 +53,16 @@ readonly class CategoryService
 
         $user->removeCategory($category);
         $this->em->flush();
+    }
+
+    public function getByIdAndUser(int $categoryId, User $user): Category
+    {
+        $category = $this->categoryRepository->findOneByIdAndUser($categoryId, $user);
+
+        if(!$category){
+            throw new DomainException('Category not found.');
+        }
+
+        return $category;
     }
 }

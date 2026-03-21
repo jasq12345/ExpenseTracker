@@ -18,9 +18,4 @@ enum TransactionType: string
     {
         return $this === self::EXPENSE;
     }
-
-    public function isIncome(): bool
-    {
-        return $this === self::INCOME;
-    }
 }

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Service\Notificaation;
+namespace App\Service\Notification;
 
 use App\Entity\User;
 use Psr\Log\LoggerInterface;

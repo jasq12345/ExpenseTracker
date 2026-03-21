@@ -86,7 +86,7 @@ readonly class BudgetService
     {
         $budget = $this->budgetRepository->findCurrentBudgetByUser($user);
 
-        if($budget) {
+        if(!$budget) {
             throw new DomainException('No active budget for this month. Please create a budget before making transactions.');
         }
 

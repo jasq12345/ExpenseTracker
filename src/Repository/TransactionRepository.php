@@ -48,7 +48,8 @@ class TransactionRepository extends ServiceEntityRepository
         ?DateTimeImmutable $start,
         ?DateTimeImmutable $end,
         ?array $categories = null
-    ): float {
+    ): float
+    {
         $qb = $this->createQueryBuilder('t');
 
         $qb->select('COALESCE(SUM(t.price * t.amount), 0) as total')

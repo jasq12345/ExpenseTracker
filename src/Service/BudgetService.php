@@ -8,6 +8,7 @@ use App\Entity\Budget;
 use App\Entity\User;
 use App\Entity\ValueObject\BudgetPolicy;
 use App\Enum\TransactionType;
+use App\Guard\BudgetGuard;
 use App\Repository\BudgetRepository;
 use App\Service\Notification\BudgetAlertService;
 use Doctrine\ORM\EntityManagerInterface;
@@ -20,7 +21,7 @@ readonly class BudgetService
         private EntityManagerInterface $em,
         private UserProviderService $userProvider,
         private BudgetRepository $budgetRepository,
-        private BudgetAlertService $budgetAlertService,
+        private BudgetGuard $budgetGuard,
     ) {}
 
     public function create(CreateBudgetDto $dto): Budget
@@ -72,13 +73,13 @@ readonly class BudgetService
      */
     public function applyTransaction(Budget $budget, float $amount, TransactionType $type): void
     {
-        match ($type) {
-            TransactionType::EXPENSE => $budget->addExpense($amount),
-            TransactionType::INCOME  => $budget->addIncome($amount),
-        };
-
         if ($type === TransactionType::EXPENSE) {
-            $this->budgetAlertService->checkAndAlert($budget);
+            if (!$this->budgetGuard->canAddExpense($budget, $amount)) {
+                throw new DomainException('Budget limit exceeded');
+            }
+            $budget->addExpense($amount);
+        } else {
+            $budget->addIncome($amount);
         }
     }
 

@@ -13,7 +13,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Attribute\MapQueryString;
 use Symfony\Component\Routing\Attribute\Route;
 
-#[Route('/reports')]
+#[Route('/api/reports')]
 class ReportController extends AbstractController
 {
     /**

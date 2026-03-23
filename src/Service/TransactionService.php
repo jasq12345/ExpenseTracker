@@ -5,10 +5,7 @@ namespace App\Service;
 use App\Dto\Transaction\CreateTransactionDto;
 use App\Dto\Transaction\UpdateTransactionDto;
 use App\Entity\Transaction;
-use App\Enum\TransactionType;
 use App\Event\TransactionCreatedEvent;
-use App\Exception\DomainException\BudgetLimitExceededException;
-use App\Guard\BudgetGuard;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\EventDispatcher\EventDispatcherInterface;
 
@@ -19,7 +16,6 @@ readonly class TransactionService
         private CategoryService $categoryService,
         private UserProviderService $userProvider,
         private BudgetService $budgetService,
-        private BudgetGuard $budgetGuard,
         private EventDispatcherInterface $eventDispatcher,
     ){}
 
@@ -29,13 +25,6 @@ readonly class TransactionService
         $budget = $this->budgetService->getCurrentBudget($user);
         $category = $this->categoryService->getByIdAndUser($dto->categoryId, $user);
         $totalAmount = $dto->amount * $dto->price;
-
-        if (
-            $dto->type === TransactionType::EXPENSE &&
-            !$this->budgetGuard->canAddExpense($budget, $totalAmount)
-        ) {
-            throw new BudgetLimitExceededException('Budget limit exceeded');
-        }
 
         $transaction = $this->createTransaction($dto);
 

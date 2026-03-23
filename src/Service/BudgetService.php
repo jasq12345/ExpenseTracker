@@ -7,9 +7,11 @@ use App\Dto\Budget\UpdateBudgetDto;
 use App\Entity\Budget;
 use App\Entity\User;
 use App\Entity\ValueObject\BudgetPolicy;
+use App\Enum\BudgetPolicyEnum;
 use App\Enum\TransactionType;
 use App\Exception\DomainException\BudgetLimitExceededException;
 use App\Exception\DomainException\BudgetNotFoundException;
+use App\Exception\DomainException\InsufficientFundsException;
 use App\Guard\BudgetGuard;
 use App\Repository\BudgetRepository;
 use App\Service\Notification\BudgetAlertService;
@@ -77,7 +79,12 @@ readonly class BudgetService
     {
         if ($type === TransactionType::EXPENSE) {
             if (!$this->budgetGuard->canAddExpense($budget, $amount)) {
-                throw new BudgetLimitExceededException('Budget limit exceeded');
+                $policy = $budget->getBudgetPolicy()->getPolicy();
+
+                throw match ($policy) {
+                    BudgetPolicyEnum::STRICT   => new BudgetLimitExceededException('Cannot go below minimum balance.'),
+                    default                    => new InsufficientFundsException('Insufficient funds.'),
+                };
             }
             $budget->addExpense($amount);
         } else {

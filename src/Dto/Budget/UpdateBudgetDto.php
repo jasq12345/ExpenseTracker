@@ -12,7 +12,7 @@ readonly class UpdateBudgetDto
 {
     public function __construct(
         #[BudgetLimitAmount]
-        public int $limitAmount,
+        public string $limitAmount,
 
         public BudgetPolicyEnum $policy = BudgetPolicyEnum::STRICT,
 

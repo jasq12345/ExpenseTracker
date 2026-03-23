@@ -14,7 +14,7 @@ class UpdateTransactionDto
         public string $name,
 
         #[TransactionCategoryId]
-        public ?int $categoryId = null,
+        public int $categoryId,
 
         #[TransactionDescription]
         public ?string $description = null,

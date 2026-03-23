@@ -3,15 +3,16 @@
 namespace App\Dto\Report;
 
 use App\Enum\TransactionType;
-use Symfony\Component\Validator\Constraints as Assert;
+use App\Validator\Constraint\Report\ReportMonth;
+use App\Validator\Constraint\Report\ReportYear;
 
 readonly class MonthlyDto extends ReportFilterDto
 {
     public function __construct(
-        #[Assert\NotBlank]
+        #[ReportMonth]
         public int $month,
 
-        #[Assert\NotBlank]
+        #[ReportYear]
         public int $year,
         ?array $categories = null,
         ?TransactionType $filterType = null,

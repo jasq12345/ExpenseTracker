@@ -8,6 +8,8 @@ use App\Entity\Budget;
 use App\Entity\User;
 use App\Entity\ValueObject\BudgetPolicy;
 use App\Enum\TransactionType;
+use App\Exception\DomainException\BudgetLimitExceededException;
+use App\Exception\DomainException\BudgetNotFoundException;
 use App\Guard\BudgetGuard;
 use App\Repository\BudgetRepository;
 use App\Service\Notification\BudgetAlertService;
@@ -75,7 +77,7 @@ readonly class BudgetService
     {
         if ($type === TransactionType::EXPENSE) {
             if (!$this->budgetGuard->canAddExpense($budget, $amount)) {
-                throw new DomainException('Budget limit exceeded');
+                throw new BudgetLimitExceededException('Budget limit exceeded');
             }
             $budget->addExpense($amount);
         } else {
@@ -88,7 +90,7 @@ readonly class BudgetService
         $budget = $this->budgetRepository->findCurrentBudgetByUser($user);
 
         if(!$budget) {
-            throw new DomainException('No active budget for this month. Please create a budget before making transactions.');
+            throw new BudgetNotFoundException('No active budget for this month. Please create a budget before making transactions.');
         }
 
         return $budget;

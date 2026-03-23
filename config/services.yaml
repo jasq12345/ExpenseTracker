@@ -27,6 +27,9 @@ services:
     App\EventListener\ExceptionListener:
         tags:
             - { name: kernel.event_listener, event: kernel.exception }
+    App\EventListener\BudgetAlertListener:
+        tags:
+            - { name: kernel.event_listener, event: App\Event\TransactionCreatedEvent, method: onTransactionCreated }
 
     App\Service\NotificationServiceInterface:
         alias: App\Service\LoggerNotificationService

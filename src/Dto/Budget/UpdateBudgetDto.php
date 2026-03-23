@@ -3,17 +3,20 @@
 namespace App\Dto\Budget;
 
 use App\Enum\BudgetPolicyEnum;
-use Symfony\Component\Validator\Constraints as Assert;
+use App\Validator\Constraint\Budget\BudgetLimitAmount;
+use App\Validator\Constraint\Budget\BudgetPolicyThresholdConsistency;
+use App\Validator\Constraint\Budget\BudgetWarningThreshold;
 
+#[BudgetPolicyThresholdConsistency]
 readonly class UpdateBudgetDto
 {
     public function __construct(
-        #[Assert\NotBlank]
+        #[BudgetLimitAmount]
         public int $limitAmount,
 
         public BudgetPolicyEnum $policy = BudgetPolicyEnum::STRICT,
 
-        #[Assert\PositiveOrZero]
+        #[BudgetWarningThreshold]
         public ?int $warningThreshold = 80,
     ){}
 }

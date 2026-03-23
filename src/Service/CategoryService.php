@@ -6,6 +6,7 @@ use App\Dto\Category\CreateCategoryDto;
 use App\Dto\Category\UpdateCategoryDto;
 use App\Entity\Category;
 use App\Entity\User;
+use App\Exception\DomainException\CategoryNotFoundException;
 use App\Repository\CategoryRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use DomainException;
@@ -60,7 +61,7 @@ readonly class CategoryService
         $category = $this->categoryRepository->findOneByIdAndUser($categoryId, $user);
 
         if(!$category){
-            throw new DomainException('Category not found.');
+            throw new CategoryNotFoundException('Category not found.');
         }
 
         return $category;

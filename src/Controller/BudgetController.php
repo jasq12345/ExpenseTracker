@@ -12,12 +12,13 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Attribute\MapRequestPayload;
 use Symfony\Component\Routing\Attribute\Route;
 
-#[Route('/budgets')]
+#[Route('/api/budgets')]
 class BudgetController extends AbstractController
 {
     #[Route('', methods: ['GET'])]
     public function list(BudgetRepository $repository): JsonResponse
     {
+        //zmienic zeby bylo mozne zwracac tylko budgety dla danego usera
         return $this->json(
             $repository->findAll(),
             Response::HTTP_OK,

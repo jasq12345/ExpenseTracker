@@ -20,11 +20,6 @@ class TransactionCategoryIdValidator extends ConstraintValidator
             throw new UnexpectedTypeException($constraint, TransactionCategoryId::class);
         }
 
-        // nullable — skip if null
-        if ($value === null) {
-            return;
-        }
-
         if (!is_int($value) || $value < 1) {
             $this->context->buildViolation($constraint->message)
                 ->addViolation();

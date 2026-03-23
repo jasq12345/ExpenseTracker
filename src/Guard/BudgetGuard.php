@@ -32,17 +32,13 @@ class BudgetGuard
     public function canAddExpense(Budget $budget, float $amount): bool
     {
         $policy = $budget->getBudgetPolicy()->getPolicy();
-
-        if (!$policy->requiresWarningThreshold()) {
-            return true;
-        }
-
-        $newSpent = (float) ($budget->getSpentAmount() ?? 0) + $amount;
-        $limit = (float) ($budget->getLimitAmount() ?? 0);
+        $currentAmount = (float) ($budget->getCurrentAmount() ?? 0);
+        $newAmount = $currentAmount - $amount;
 
         return match ($policy) {
-            BudgetPolicyEnum::STRICT => $newSpent <= $limit,
-            default => true,
+            BudgetPolicyEnum::UNLIMITED => true,
+            BudgetPolicyEnum::FLEXIBLE  => $newAmount >= 0,
+            BudgetPolicyEnum::STRICT    => $newAmount >= (float) ($budget->getLimitAmount() ?? 0),
         };
     }
 }

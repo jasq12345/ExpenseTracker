@@ -6,6 +6,7 @@ use App\Entity\ValueObject\BudgetPolicy;
 use App\Repository\BudgetRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Attribute\Groups;
 
 #[ORM\Entity(repositoryClass: BudgetRepository::class)]
 class Budget
@@ -13,28 +14,36 @@ class Budget
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['budget:read'])]
     private ?int $id = null;
 
     #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 2)]
+    #[Groups(['budget:read'])]
     private ?string $limitAmount = null;
 
     #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 2)]
+    #[Groups(['budget:read'])]
     private ?string $currentAmount;
 
     #[ORM\Column(type: Types::SMALLINT)]
+    #[Groups(['budget:read'])]
     private ?int $month;
 
     #[ORM\Column(type: Types::SMALLINT)]
+    #[Groups(['budget:read'])]
     private ?int $year;
 
     #[ORM\ManyToOne(inversedBy: 'budgets')]
     #[ORM\JoinColumn(name: 'user_id', nullable: false, onDelete: 'CASCADE')]
+    #[Groups(['budget:read'])]
     private ?User $user = null;
 
     #[Orm\Embedded(class: BudgetPolicy::class)]
+    #[Groups(['budget:read'])]
     private BudgetPolicy $budgetPolicy;
 
     #[ORM\Column(type: 'decimal', precision: 10, scale: 2)]
+    #[Groups(['budget:read'])]
     private ?string $spentAmount;
 
     public function __construct()

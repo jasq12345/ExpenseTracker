@@ -6,6 +6,7 @@ use App\Exception\Auth\AssociationInvalidValueException;
 use App\Exception\Auth\AssociationNullException;
 use App\Exception\Auth\RefreshTokenExpiredException;
 use App\Exception\Auth\RefreshTokenNotFoundException;
+use App\Exception\DomainException\AppDomainException;
 use App\Exception\Validation\InvalidJsonException;
 use DomainException;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -24,7 +25,8 @@ final class ExceptionListener
                 $exception instanceof AssociationNullException => 400,
             $exception instanceof RefreshTokenExpiredException => 401,
             $exception instanceof RefreshTokenNotFoundException => 404,
-            $exception instanceof DomainException => 422,
+            $exception instanceof DomainException,
+                $exception instanceof AppDomainException => 422,
             $exception instanceof HttpExceptionInterface => $exception->getStatusCode(),
             default => 500,
         };

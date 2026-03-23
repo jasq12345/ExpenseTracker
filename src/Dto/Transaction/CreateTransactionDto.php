@@ -8,7 +8,6 @@ use App\Validator\Constraint\Transaction\TransactionCategoryId;
 use App\Validator\Constraint\Transaction\TransactionDescription;
 use App\Validator\Constraint\Transaction\TransactionName;
 use App\Validator\Constraint\Transaction\TransactionPrice;
-use Symfony\Component\Validator\Constraints as Assert;
 
 class CreateTransactionDto
 {
@@ -23,7 +22,7 @@ class CreateTransactionDto
         public int $price,
 
         #[TransactionCategoryId]
-        public ?int $categoryId = null,
+        public int $categoryId,
 
         #[TransactionDescription]
         public ?string $description = null,

@@ -48,4 +48,18 @@ class BudgetRepository extends ServiceEntityRepository
             'year' => (int) date('Y')
         ]);
     }
+
+    /**
+     * @return Budget[]
+     */
+    public function listByUser(User $user): array
+    {
+        return $this->createQueryBuilder('b')
+            ->andWhere('b.user = :user')
+            ->setParameter('user', $user)
+            ->orderBy('b.year', 'DESC')
+            ->addOrderBy('b.month', 'DESC')
+            ->getQuery()
+            ->getResult();
+    }
 }

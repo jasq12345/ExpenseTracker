@@ -6,6 +6,7 @@ use App\Dto\Budget\CreateBudgetDto;
 use App\Dto\Budget\UpdateBudgetDto;
 use App\Repository\BudgetRepository;
 use App\Service\BudgetService;
+use App\Service\UserProviderService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
@@ -16,11 +17,12 @@ use Symfony\Component\Routing\Attribute\Route;
 class BudgetController extends AbstractController
 {
     #[Route('', methods: ['GET'])]
-    public function list(BudgetRepository $repository): JsonResponse
+    public function list(BudgetRepository $repository, UserProviderService $providerService): JsonResponse
     {
-        //zmienic zeby bylo mozne zwracac tylko budgety dla danego usera
+        $user = $providerService->getUser();
+
         return $this->json(
-            $repository->findAll(),
+            $repository->listByUser($user),
             Response::HTTP_OK,
             [],
             ['groups' => ['budget:read']]

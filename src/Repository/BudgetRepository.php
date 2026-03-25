@@ -2,9 +2,11 @@
 
 namespace App\Repository;
 
+use App\Dto\Pagination\PaginationDto;
 use App\Entity\Budget;
 use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 use DomainException;
 
@@ -52,14 +54,26 @@ class BudgetRepository extends ServiceEntityRepository
     /**
      * @return Budget[]
      */
-    public function listByUser(User $user): array
+    public function listByUser(User $user, PaginationDto $dto): array
     {
         return $this->createQueryBuilder('b')
             ->andWhere('b.user = :user')
             ->setParameter('user', $user)
             ->orderBy('b.year', 'DESC')
             ->addOrderBy('b.month', 'DESC')
+            ->setFirstResult(($dto->page - 1) * $dto->limit)
+            ->setMaxResults($dto->limit)
             ->getQuery()
             ->getResult();
+    }
+
+    public function countByUser(User $user): int
+    {
+        return $this->createQueryBuilder('b')
+            ->select('COUNT(b.id)')
+            ->andWhere('b.user = :user')
+            ->setParameter('user', $user)
+            ->getQuery()
+            ->getSingleScalarResult();
     }
 }

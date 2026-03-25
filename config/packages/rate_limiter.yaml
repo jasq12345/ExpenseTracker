@@ -1,7 +1,22 @@
 # config/packages/rate_limiter.yaml
 framework:
     rate_limiter:
-        login_limiter:
+        api_auth:
             policy: 'sliding_window'
             limit: 5
+            interval: '10 minute'
+
+        api_read: # GET
+            policy: sliding_window
+            limit: 100
+            interval: '1 minute'
+
+            api_write: # POST, PUT, PATCH, DELETE
+                policy: sliding_window
+                limit: 30
+                interval: '1 minute'
+
+        api_reports:
+            policy: 'sliding_window'
+            limit: 20
             interval: '1 minute'

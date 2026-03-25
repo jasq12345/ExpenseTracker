@@ -4,12 +4,14 @@ namespace App\Controller;
 
 use App\Dto\Budget\CreateBudgetDto;
 use App\Dto\Budget\UpdateBudgetDto;
+use App\Dto\Pagination\PaginationDto;
 use App\Repository\BudgetRepository;
 use App\Service\BudgetService;
 use App\Service\UserProviderService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Attribute\MapQueryString;
 use Symfony\Component\HttpKernel\Attribute\MapRequestPayload;
 use Symfony\Component\Routing\Attribute\Route;
 
@@ -17,12 +19,16 @@ use Symfony\Component\Routing\Attribute\Route;
 class BudgetController extends AbstractController
 {
     #[Route('', methods: ['GET'])]
-    public function list(BudgetRepository $repository, UserProviderService $providerService): JsonResponse
+    public function list(
+        #[MapQueryString] PaginationDto $dto,
+        BudgetRepository $repository,
+        UserProviderService $providerService
+    ): JsonResponse
     {
         $user = $providerService->getUser();
 
         return $this->json(
-            $repository->listByUser($user),
+            $repository->listByUser($user, $dto),
             Response::HTTP_OK,
             [],
             ['groups' => ['budget:read']]

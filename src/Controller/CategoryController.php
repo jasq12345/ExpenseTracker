@@ -4,11 +4,14 @@ namespace App\Controller;
 
 use App\Dto\Category\CreateCategoryDto;
 use App\Dto\Category\UpdateCategoryDto;
+use App\Dto\Pagination\PaginationDto;
 use App\Repository\CategoryRepository;
 use App\Service\CategoryService;
+use App\Service\UserProviderService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Attribute\MapQueryString;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\HttpKernel\Attribute\MapRequestPayload;
 
@@ -16,10 +19,16 @@ use Symfony\Component\HttpKernel\Attribute\MapRequestPayload;
 class CategoryController extends AbstractController
 {
     #[Route('', methods: ['GET'])]
-    public function list(CategoryRepository $repository): JsonResponse
+    public function list(
+        #[MapQueryString] PaginationDto $dto,
+        CategoryRepository $repository,
+        UserProviderService $providerService
+    ): JsonResponse
     {
+        $user = $providerService->getUser();
+
         return $this->json(
-            $repository->findAll(),
+            $repository->listByUser($user, $dto),
             Response::HTTP_OK,
             [],
             ['groups' => ['category:read']]

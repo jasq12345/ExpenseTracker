@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use App\Dto\Pagination\PaginationDto;
 use App\Entity\Category;
 use App\Entity\Transaction;
 use App\Entity\User;
@@ -74,5 +75,27 @@ class TransactionRepository extends ServiceEntityRepository
         }
 
         return (float) $qb->getQuery()->getSingleScalarResult();
+    }
+
+    public function listByUser(User $user, PaginationDto $dto): array
+    {
+        return $this->createQueryBuilder('t')
+            ->andWhere('t.user = :user')
+            ->setParameter('user', $user)
+            ->orderBy('t.createdAt', 'DESC')
+            ->setFirstResult(($dto->page - 1) * $dto->limit)
+            ->setMaxResults($dto->limit)
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function countByUser(User $user): int
+    {
+        return $this->createQueryBuilder('t')
+            ->select('COUNT(t.id)')
+            ->andWhere('t.user = :user')
+            ->setParameter('user', $user)
+            ->getQuery()
+            ->getSingleScalarResult();
     }
 }

@@ -9,20 +9,23 @@ use Symfony\Component\RateLimiter\RateLimiterFactory;
 readonly class RateLimitListener
 {
     public function __construct(
-        private RateLimiterFactory $apiGeneralLimiter,
+        private RateLimiterFactory $apiReadLimiter,
         private RateLimiterFactory $apiReportsLimiter,
         private RateLimiterFactory $apiAuthLimiter,
+        private RateLimiterFactory $apiWriteLimiter,
     ) {}
 
     public function onKernelRequest(RequestEvent $event): void
     {
         $request = $event->getRequest();
         $path = $request->getPathInfo();
+        $method = $request->getMethod();
 
         $limiter = match (true) {
             str_starts_with($path, '/api/reports') => $this->apiReportsLimiter,
             str_starts_with($path, '/api/auth') => $this->apiAuthLimiter,
-            str_starts_with($path, '/api') => $this->apiGeneralLimiter,
+            in_array($method, ['POST', 'PUT', 'PATCH', 'DELETE']) => $this->apiWriteLimiter,
+            str_starts_with($path, '/api') => $this->apiReadLimiter,
             default => null,
         };
 

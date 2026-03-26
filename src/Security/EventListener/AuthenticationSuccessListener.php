@@ -4,6 +4,7 @@ namespace App\Security\EventListener;
 
 use App\Entity\User;
 use App\Exception\Auth\TokenGenerationException;
+use App\Repository\RefreshTokenRepository;
 use App\Security\Token\RefreshTokenService;
 use Lexik\Bundle\JWTAuthenticationBundle\Event\AuthenticationSuccessEvent;
 use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
@@ -13,6 +14,7 @@ readonly class AuthenticationSuccessListener
 {
     public function __construct(
         private RefreshTokenService $refreshTokenService,
+        private RefreshTokenRepository $refreshTokenRepository,
     ) {}
 
     /**
@@ -27,17 +29,20 @@ readonly class AuthenticationSuccessListener
             return;
         }
 
-        // Safety check: ensure the token exists before manipulating it
         if (!isset($data['token'])) {
             return;
         }
 
-        $refreshToken = $this->refreshTokenService->createRefreshToken($user);
+        $activeTokens = $this->refreshTokenRepository->findActiveByUser($user);
+        if (count($activeTokens) >= 5) {
+            $oldest = $activeTokens[0];
+            $this->refreshTokenService->removeToken($user, $oldest);
+        }
 
+        $refreshToken = $this->refreshTokenService->createRefreshToken($user);
 
         $data['refreshToken'] = $refreshToken->getToken();
         $data['accessToken'] = $data['token'];
-
         unset($data['token']);
 
         $event->setData($data);

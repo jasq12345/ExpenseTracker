@@ -38,6 +38,7 @@ services:
             $apiReportsLimiter: '@limiter.api_reports'
             $apiAuthLimiter: '@limiter.api_auth'
             $apiWriteLimiter: '@limiter.api_write'
+            $apiRefreshLimiter: '@limiter.api_refresh'
         tags:
             - { name: kernel.event_listener, event: kernel.request }
 

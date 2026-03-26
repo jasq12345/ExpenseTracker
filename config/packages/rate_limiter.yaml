@@ -1,4 +1,3 @@
-# config/packages/rate_limiter.yaml
 framework:
     rate_limiter:
         api_auth:
@@ -6,12 +5,17 @@ framework:
             limit: 5
             interval: '10 minute'
 
-        api_read: # GET
+        api_refresh:
+            policy: 'sliding_window'
+            limit: 30
+            interval: '15 minute'
+
+        api_read:
             policy: sliding_window
             limit: 100
             interval: '1 minute'
 
-        api_write: # POST, PUT, PATCH, DELETE
+        api_write:
             policy: sliding_window
             limit: 30
             interval: '1 minute'

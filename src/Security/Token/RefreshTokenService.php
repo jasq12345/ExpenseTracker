@@ -85,7 +85,7 @@ readonly class RefreshTokenService
             }
         );
     }
-    private function removeToken(User $user, RefreshToken $token): void
+    public function removeToken(User $user, RefreshToken $token): void
     {
         $user->removeRefreshToken($token);
         $this->em->remove($token);

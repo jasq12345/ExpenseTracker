@@ -35,8 +35,8 @@ final class TransactionController extends AbstractController
         );
     }
 
-    #[Route('/{id}', name: 'app_transaction_get', requirements: ['id' => '\d+'], methods: ['GET'])]
-    public function getOne(TransactionRepository $repository, int $id): JsonResponse
+    #[Route('/{id}', name: 'app_transaction_show', requirements: ['id' => '\d+'], methods: ['GET'])]
+    public function show(TransactionRepository $repository, int $id): JsonResponse
     {
         $transaction = $repository->find($id);
 
@@ -56,12 +56,7 @@ final class TransactionController extends AbstractController
     {
         $transaction = $service->create($dto);
 
-        return $this->json(
-            $transaction,
-            Response::HTTP_OK,
-            [],
-            ['groups' => ['transaction:read']]
-        );
+        return $this->json(['message' => 'Transaction created successfully'], 201);
     }
 
     #[Route('/{id}', name: 'app_transaction_update', requirements: ['id' => '\d+'], methods: ['PUT', 'PATCH'])]
@@ -76,11 +71,6 @@ final class TransactionController extends AbstractController
 
         $service->update($transaction, $dto);
 
-        return $this->json(
-            $transaction,
-            Response::HTTP_OK,
-            [],
-            ['groups' => ['transaction:read']]
-        );
+        return $this->json(['message' => 'Transaction updated successfully'], 201);
     }
 }

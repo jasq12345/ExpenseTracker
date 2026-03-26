@@ -35,8 +35,8 @@ class CategoryController extends AbstractController
         );
     }
 
-    #[Route('/{id}', name: 'app_category_get', requirements: ['id' => '\d+'], methods: ['GET'])]
-    public function getOne(CategoryRepository $repository, int $id): JsonResponse
+    #[Route('/{id}', name: 'app_category_show', requirements: ['id' => '\d+'], methods: ['GET'])]
+    public function show(CategoryRepository $repository, int $id): JsonResponse
     {
         $category = $repository->find($id);
 
@@ -57,14 +57,9 @@ class CategoryController extends AbstractController
         #[MapRequestPayload] CreateCategoryDto $dto,
         CategoryService $service
     ): JsonResponse {
-        $category = $service->create($dto);
+        $service->create($dto);
 
-        return $this->json(
-            $category,
-            Response::HTTP_CREATED,
-            [],
-            ['groups' => ['category:read']]
-        );
+        return $this->json(['message' => 'Category created successfully'], 201);
     }
 
     #[Route('/{id}', name: 'app_category_delete', methods: ['DELETE'])]
@@ -74,12 +69,8 @@ class CategoryController extends AbstractController
 
         $service->delete($category);
 
-        return $this->json(
-            $category,
-            Response::HTTP_OK,
-            [],
-            ['groups' => ['category:read']]
-        );
+        return $this->json(['message' => 'Category deleted successfully'], 201);
+
     }
     #[Route('/{id}', name: 'app_category_update', methods: ['PUT', 'PATCH'])]
     public function update(
@@ -93,11 +84,7 @@ class CategoryController extends AbstractController
 
         $service->update($category, $dto);
 
-        return $this->json(
-            $category,
-            Response::HTTP_OK,
-            [],
-            ['groups' => ['category:read']]
-        );
+        return $this->json(['message' => 'Category updated successfully'], 201);
+
     }
 }

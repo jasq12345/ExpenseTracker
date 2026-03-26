@@ -11,10 +11,10 @@ framework:
             limit: 100
             interval: '1 minute'
 
-            api_write: # POST, PUT, PATCH, DELETE
-                policy: sliding_window
-                limit: 30
-                interval: '1 minute'
+        api_write: # POST, PUT, PATCH, DELETE
+            policy: sliding_window
+            limit: 30
+            interval: '1 minute'
 
         api_reports:
             policy: 'sliding_window'

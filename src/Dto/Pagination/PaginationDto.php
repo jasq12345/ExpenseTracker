@@ -2,17 +2,16 @@
 
 namespace App\Dto\Pagination;
 
-use Symfony\Component\Validator\Constraints as Assert;
+use App\Validator\Constraint\Pagination\PaginationLimit;
+use App\Validator\Constraint\Pagination\PaginationPage;
 
 readonly class PaginationDto
 {
     public function __construct(
-        #[Assert\NotBlank]
-        #[Assert\Positive]
+        #[PaginationPage]
         public int $page = 1,
 
-        #[Assert\NotBlank]
-        #[Assert\Positive]
+        #[PaginationLimit]
         public int $limit = 10,
     ) {}
 }

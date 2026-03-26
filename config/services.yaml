@@ -33,6 +33,12 @@ services:
             - { name: kernel.event_listener, event: App\Event\TransactionCreatedEvent, method: onTransactionCreated }
 
     App\EventListener\RateLimitListener:
+        arguments:
+            $apiReadLimiter: '@limiter.api_read'
+            $apiReportsLimiter: '@limiter.api_reports'
+            $apiAuthLimiter: '@limiter.api_auth'
+            $apiWriteLimiter: '@limiter.api_write'
+            $apiRefreshLimiter: '@limiter.api_refresh'
         tags:
             - { name: kernel.event_listener, event: kernel.request }
 

@@ -18,7 +18,7 @@ use Symfony\Component\Routing\Attribute\Route;
 #[Route('/api/budgets')]
 class BudgetController extends AbstractController
 {
-    #[Route('', methods: ['GET'])]
+    #[Route('', name: 'app_budget_list', methods: ['GET'])]
     public function list(
         #[MapQueryString] PaginationDto $dto,
         BudgetRepository $repository,
@@ -35,8 +35,8 @@ class BudgetController extends AbstractController
         );
     }
 
-    #[Route('/{id}', requirements: ['id' => '\d+'], methods: ['GET'])]
-    public function getOne(BudgetRepository $repository, int $id): JsonResponse
+    #[Route('/{id}', name: 'app_budget_show', requirements: ['id' => '\d+'], methods: ['GET'])]
+    public function show(BudgetRepository $repository, int $id): JsonResponse
     {
         $budget = $repository->find($id);
 
@@ -48,35 +48,25 @@ class BudgetController extends AbstractController
         );
     }
 
-    #[Route('/', methods: ['POST'])]
+    #[Route('/', name: 'app_budget_create', methods: ['POST'])]
     public function create(
         #[MapRequestPayload] CreateBudgetDto $dto,
         BudgetService $service
     ): JsonResponse
     {
-        $budget = $service->create($dto);
+        $service->create($dto);
 
-        return $this->json(
-            $budget,
-            Response::HTTP_OK,
-            [],
-            ['groups' => ['budget:read']]
-        );
+        return $this->json(['message' => 'Budget created successfully'], 201);
     }
 
-    #[Route('/', methods: ['PUT', 'PATCH'])]
+    #[Route('/', name: 'app_budget_update', methods: ['PUT', 'PATCH'])]
     public function update(
         #[MapRequestPayload] UpdateBudgetDto $dto,
         BudgetService $service,
     ): JsonResponse
     {
-        $budget = $service->update($dto);
+        $service->update($dto);
 
-        return $this->json(
-            $budget,
-            Response::HTTP_OK,
-            [],
-            ['groups' => ['budget:read']]
-        );
+        return $this->json(['message' => 'Budget updated successfully'], 201);
     }
 }

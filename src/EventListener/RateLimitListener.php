@@ -13,6 +13,7 @@ readonly class RateLimitListener
         private RateLimiterFactory $apiReportsLimiter,
         private RateLimiterFactory $apiAuthLimiter,
         private RateLimiterFactory $apiWriteLimiter,
+        private RateLimiterFactory $apiRefreshLimiter,
     ) {}
 
     public function onKernelRequest(RequestEvent $event): void
@@ -22,6 +23,8 @@ readonly class RateLimitListener
         $method = $request->getMethod();
 
         $limiter = match (true) {
+            str_starts_with($path, '/api/auth/refresh') => $this->apiRefreshLimiter,
+            str_starts_with($path, '/api/auth/login') => null,
             str_starts_with($path, '/api/reports') => $this->apiReportsLimiter,
             str_starts_with($path, '/api/auth') => $this->apiAuthLimiter,
             in_array($method, ['POST', 'PUT', 'PATCH', 'DELETE']) => $this->apiWriteLimiter,

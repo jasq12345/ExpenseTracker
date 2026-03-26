@@ -14,7 +14,7 @@ use Symfony\Component\Routing\Attribute\Route;
 #[Route('/api/auth')]
 final class AuthController extends AbstractController
 {
-    #[Route('/register', name: 'token')]
+    #[Route('/register', name: 'app_register', methods: 'POST')]
     public function register(
         #[MapRequestPayload] RegisterDto $dto,
         RegistrationService $registrationService,

@@ -18,7 +18,7 @@ use Symfony\Component\HttpKernel\Attribute\MapRequestPayload;
 #[Route('/api/categories')]
 class CategoryController extends AbstractController
 {
-    #[Route('', methods: ['GET'])]
+    #[Route('', name: 'app_category_list', methods: ['GET'])]
     public function list(
         #[MapQueryString] PaginationDto $dto,
         CategoryRepository $repository,
@@ -35,8 +35,8 @@ class CategoryController extends AbstractController
         );
     }
 
-    #[Route('/{id}', requirements: ['id' => '\d+'], methods: ['GET'])]
-    public function getOne(CategoryRepository $repository, int $id): JsonResponse
+    #[Route('/{id}', name: 'app_category_show', requirements: ['id' => '\d+'], methods: ['GET'])]
+    public function show(CategoryRepository $repository, int $id): JsonResponse
     {
         $category = $repository->find($id);
 
@@ -52,36 +52,27 @@ class CategoryController extends AbstractController
         );
     }
 
-    #[Route('', methods: ['POST'])]
+    #[Route('', name: 'app_category_create', methods: ['POST'])]
     public function create(
         #[MapRequestPayload] CreateCategoryDto $dto,
         CategoryService $service
     ): JsonResponse {
-        $category = $service->create($dto);
+        $service->create($dto);
 
-        return $this->json(
-            $category,
-            Response::HTTP_CREATED,
-            [],
-            ['groups' => ['category:read']]
-        );
+        return $this->json(['message' => 'Category created successfully'], 201);
     }
 
-    #[Route('/{id}', methods: ['DELETE'])]
+    #[Route('/{id}', name: 'app_category_delete', methods: ['DELETE'])]
     public function delete(CategoryRepository $repository, CategoryService $service, int $id): JsonResponse
     {
         $category = $repository->find($id);
 
         $service->delete($category);
 
-        return $this->json(
-            $category,
-            Response::HTTP_OK,
-            [],
-            ['groups' => ['category:read']]
-        );
+        return $this->json(['message' => 'Category deleted successfully'], 201);
+
     }
-    #[Route('/{id}', methods: ['PUT', 'PATCH'])]
+    #[Route('/{id}', name: 'app_category_update', methods: ['PUT', 'PATCH'])]
     public function update(
         #[MapRequestPayload] UpdateCategoryDto $dto,
         CategoryService $service,
@@ -93,11 +84,7 @@ class CategoryController extends AbstractController
 
         $service->update($category, $dto);
 
-        return $this->json(
-            $category,
-            Response::HTTP_OK,
-            [],
-            ['groups' => ['category:read']]
-        );
+        return $this->json(['message' => 'Category updated successfully'], 201);
+
     }
 }

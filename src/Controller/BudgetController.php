@@ -18,7 +18,7 @@ use Symfony\Component\Routing\Attribute\Route;
 #[Route('/api/budgets')]
 class BudgetController extends AbstractController
 {
-    #[Route('', methods: ['GET'])]
+    #[Route('', name: 'app_budget_list', methods: ['GET'])]
     public function list(
         #[MapQueryString] PaginationDto $dto,
         BudgetRepository $repository,
@@ -35,7 +35,7 @@ class BudgetController extends AbstractController
         );
     }
 
-    #[Route('/{id}', requirements: ['id' => '\d+'], methods: ['GET'])]
+    #[Route('/{id}', name: 'app_budget_get', requirements: ['id' => '\d+'], methods: ['GET'])]
     public function getOne(BudgetRepository $repository, int $id): JsonResponse
     {
         $budget = $repository->find($id);
@@ -48,7 +48,7 @@ class BudgetController extends AbstractController
         );
     }
 
-    #[Route('/', methods: ['POST'])]
+    #[Route('/', name: 'app_budget_create', methods: ['POST'])]
     public function create(
         #[MapRequestPayload] CreateBudgetDto $dto,
         BudgetService $service
@@ -64,7 +64,7 @@ class BudgetController extends AbstractController
         );
     }
 
-    #[Route('/', methods: ['PUT', 'PATCH'])]
+    #[Route('/', name: 'app_budget_update', methods: ['PUT', 'PATCH'])]
     public function update(
         #[MapRequestPayload] UpdateBudgetDto $dto,
         BudgetService $service,

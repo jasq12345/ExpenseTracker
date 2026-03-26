@@ -18,12 +18,7 @@ use Symfony\Component\Routing\Attribute\Route;
 #[Route('/api/transactions')]
 final class TransactionController extends AbstractController
 {
-    protected function getReadGroup(): string
-    {
-        return 'transaction:read';
-    }
-
-    #[Route('', methods: ['GET'])]
+    #[Route('', name: 'app_transaction_list', methods: ['GET'])]
     public function list(
         #[MapQueryString] PaginationDto $dto,
         TransactionRepository $repository,
@@ -40,7 +35,7 @@ final class TransactionController extends AbstractController
         );
     }
 
-    #[Route('/{id}', requirements: ['id' => '\d+'], methods: ['GET'])]
+    #[Route('/{id}', name: 'app_transaction_get', requirements: ['id' => '\d+'], methods: ['GET'])]
     public function getOne(TransactionRepository $repository, int $id): JsonResponse
     {
         $transaction = $repository->find($id);
@@ -53,7 +48,7 @@ final class TransactionController extends AbstractController
         );
     }
 
-    #[Route('/', methods: ['POST'])]
+    #[Route('/', name: 'app_transaction_create', methods: ['POST'])]
     public function create(
         #[MapRequestPayload] CreateTransactionDto $dto,
         TransactionService $service
@@ -69,7 +64,7 @@ final class TransactionController extends AbstractController
         );
     }
 
-    #[Route('/{id}', requirements: ['id' => '\d+'], methods: ['PUT', 'PATCH'])]
+    #[Route('/{id}', name: 'app_transaction_update', requirements: ['id' => '\d+'], methods: ['PUT', 'PATCH'])]
     public function update(
         #[MapRequestPayload] UpdateTransactionDto $dto,
         TransactionService $service,

@@ -5,7 +5,9 @@ namespace App\Controller;
 use App\Dto\Pagination\PaginationDto;
 use App\Dto\Transaction\CreateTransactionDto;
 use App\Dto\Transaction\UpdateTransactionDto;
+use App\Provider\Pagination\TransactionPaginationProvider;
 use App\Repository\TransactionRepository;
+use App\Service\PaginationResponseBuilderService;
 use App\Service\TransactionService;
 use App\Service\UserProviderService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -21,14 +23,15 @@ final class TransactionController extends AbstractController
     #[Route('', name: 'app_transaction_list', methods: ['GET'])]
     public function list(
         #[MapQueryString] PaginationDto $dto,
-        TransactionRepository $repository,
-        UserProviderService $providerService
+        UserProviderService $providerService,
+        PaginationResponseBuilderService $builder,
+        TransactionPaginationProvider $provider,
     ): JsonResponse
     {
         $user = $providerService->getUser();
 
         return $this->json(
-            $repository->listByUser($user, $dto),
+            $builder->build($dto, $provider, $user),
             Response::HTTP_OK,
             [],
             ['groups' => ['transaction:read']]

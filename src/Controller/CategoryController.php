@@ -5,8 +5,10 @@ namespace App\Controller;
 use App\Dto\Category\CreateCategoryDto;
 use App\Dto\Category\UpdateCategoryDto;
 use App\Dto\Pagination\PaginationDto;
+use App\Provider\Pagination\CategoryPaginationProvider;
 use App\Repository\CategoryRepository;
 use App\Service\CategoryService;
+use App\Service\PaginationResponseBuilderService;
 use App\Service\UserProviderService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -21,14 +23,15 @@ class CategoryController extends AbstractController
     #[Route('', name: 'app_category_list', methods: ['GET'])]
     public function list(
         #[MapQueryString] PaginationDto $dto,
-        CategoryRepository $repository,
-        UserProviderService $providerService
+        UserProviderService $providerService,
+        PaginationResponseBuilderService $builder,
+        CategoryPaginationProvider $provider,
     ): JsonResponse
     {
         $user = $providerService->getUser();
 
         return $this->json(
-            $repository->listByUser($user, $dto),
+            $builder->build($dto, $provider, $user),
             Response::HTTP_OK,
             [],
             ['groups' => ['category:read']]

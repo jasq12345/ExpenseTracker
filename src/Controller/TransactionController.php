@@ -20,7 +20,7 @@ use Symfony\Component\Routing\Attribute\Route;
 #[Route('/api/transactions')]
 final class TransactionController extends AbstractController
 {
-    #[Route('', name: 'app_transaction_list', methods: ['GET'])]
+    #[Route('/', name: 'app_transaction_list', methods: ['GET'])]
     public function list(
         #[MapQueryString] PaginationDto $dto,
         UserProviderService $providerService,

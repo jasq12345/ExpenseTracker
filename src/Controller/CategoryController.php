@@ -20,7 +20,7 @@ use Symfony\Component\HttpKernel\Attribute\MapRequestPayload;
 #[Route('/api/categories')]
 class CategoryController extends AbstractController
 {
-    #[Route('', name: 'app_category_list', methods: ['GET'])]
+    #[Route('/', name: 'app_category_list', methods: ['GET'])]
     public function list(
         #[MapQueryString] PaginationDto $dto,
         UserProviderService $providerService,
@@ -55,7 +55,7 @@ class CategoryController extends AbstractController
         );
     }
 
-    #[Route('', name: 'app_category_create', methods: ['POST'])]
+    #[Route('/', name: 'app_category_create', methods: ['POST'])]
     public function create(
         #[MapRequestPayload] CreateCategoryDto $dto,
         CategoryService $service

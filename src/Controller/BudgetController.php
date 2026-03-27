@@ -20,7 +20,7 @@ use Symfony\Component\Routing\Attribute\Route;
 #[Route('/api/budgets')]
 class BudgetController extends AbstractController
 {
-    #[Route('', name: 'app_budget_list', methods: ['GET'])]
+    #[Route('/', name: 'app_budget_list', methods: ['GET'])]
     public function list(
         #[MapQueryString] PaginationDto $dto,
         UserProviderService $providerService,

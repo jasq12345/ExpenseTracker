@@ -5,8 +5,10 @@ namespace App\Controller;
 use App\Dto\Budget\CreateBudgetDto;
 use App\Dto\Budget\UpdateBudgetDto;
 use App\Dto\Pagination\PaginationDto;
+use App\Provider\Pagination\BudgetPaginationProvider;
 use App\Repository\BudgetRepository;
 use App\Service\BudgetService;
+use App\Service\PaginationResponseBuilderService;
 use App\Service\UserProviderService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -18,17 +20,18 @@ use Symfony\Component\Routing\Attribute\Route;
 #[Route('/api/budgets')]
 class BudgetController extends AbstractController
 {
-    #[Route('', name: 'app_budget_list', methods: ['GET'])]
+    #[Route('/', name: 'app_budget_list', methods: ['GET'])]
     public function list(
         #[MapQueryString] PaginationDto $dto,
-        BudgetRepository $repository,
-        UserProviderService $providerService
+        UserProviderService $providerService,
+        PaginationResponseBuilderService $builder,
+        BudgetPaginationProvider $provider
     ): JsonResponse
     {
         $user = $providerService->getUser();
 
         return $this->json(
-            $repository->listByUser($user, $dto),
+            $builder->build($dto, $provider, $user),
             Response::HTTP_OK,
             [],
             ['groups' => ['budget:read']]
@@ -36,7 +39,10 @@ class BudgetController extends AbstractController
     }
 
     #[Route('/{id}', name: 'app_budget_show', requirements: ['id' => '\d+'], methods: ['GET'])]
-    public function show(BudgetRepository $repository, int $id): JsonResponse
+    public function show(
+        BudgetRepository $repository,
+        int $id
+    ): JsonResponse
     {
         $budget = $repository->find($id);
 

@@ -1,5 +1,3 @@
-version: "3.9"
-
 services:
   php:
     build: .
@@ -13,6 +11,7 @@ services:
       - "host.docker.internal:host-gateway"
     depends_on:
       - mysql
+      - redis
 
   nginx:
     image: nginx:alpine
@@ -24,6 +23,14 @@ services:
       - "8080:80"
     depends_on:
       - php
+
+  redis:
+    image: redis:7-alpine
+    container_name: redis
+    ports:
+      - "6379:6379"
+    command: ["redis-server", "--appendonly", "yes"]
+
 
   mysql:
     image: mysql:8.0

@@ -7,6 +7,7 @@ use App\Entity\Category;
 use App\Entity\Transaction;
 use App\Entity\User;
 use App\Enum\TransactionType;
+use App\ValueObject\Period;
 use DateTime;
 use DateTimeImmutable;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
@@ -22,32 +23,31 @@ class TransactionRepository extends ServiceEntityRepository
         parent::__construct($registry, Transaction::class);
     }
 
-    public function findByPeriod(User $user, ?DateTimeImmutable $start, ?DateTimeImmutable $end): array
-    {
-        $qb = $this->createQueryBuilder('t');
-
-        $qb->andWhere($qb->expr()->eq('t.user', ':user'))
-            ->setParameter('user', $user)
-            ->orderBy('t.createdAt', 'DESC');
-
-        if ($start !== null) {
-            $qb->andWhere($qb->expr()->gte('t.createdAt', ':start'))
-                ->setParameter('start', $start);
-        }
-
-        if ($end !== null) {
-            $qb->andWhere($qb->expr()->lte('t.createdAt', ':end'))
-                ->setParameter('end', $end);
-        }
-
-        return $qb->getQuery()->getResult();
-    }
+//    public function findByPeriod(User $user, ?DateTimeImmutable $start, ?DateTimeImmutable $end): array
+//    {
+//        $qb = $this->createQueryBuilder('t');
+//
+//        $qb->andWhere($qb->expr()->eq('t.user', ':user'))
+//            ->setParameter('user', $user)
+//            ->orderBy('t.createdAt', 'DESC');
+//
+//        if ($start !== null) {
+//            $qb->andWhere($qb->expr()->gte('t.createdAt', ':start'))
+//                ->setParameter('start', $start);
+//        }
+//
+//        if ($end !== null) {
+//            $qb->andWhere($qb->expr()->lte('t.createdAt', ':end'))
+//                ->setParameter('end', $end);
+//        }
+//
+//        return $qb->getQuery()->getResult();
+//    }
 
     public function getTotalByPeriodAndType(
         User $user,
         TransactionType $type,
-        ?DateTimeImmutable $start,
-        ?DateTimeImmutable $end,
+        Period $period,
         ?array $categories = null
     ): float
     {
@@ -59,14 +59,14 @@ class TransactionRepository extends ServiceEntityRepository
             ->setParameter('user', $user)
             ->setParameter('type', $type);
 
-        if ($start !== null) {
+        if ($period->getStartDate() !== null) {
             $qb->andWhere($qb->expr()->gte('t.createdAt', ':start'))
-                ->setParameter('start', $start);
+                ->setParameter('start', $period->getStartDate());
         }
 
-        if ($end !== null) {
+        if ($period->getEndDate() !== null) {
             $qb->andWhere($qb->expr()->lte('t.createdAt', ':end'))
-                ->setParameter('end', $end);
+                ->setParameter('end', $period->getEndDate());
         }
 
         if ($categories !== null && count($categories) > 0) {

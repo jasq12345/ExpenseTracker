@@ -9,6 +9,7 @@ use App\Entity\Category;
 use App\Entity\User;
 use App\Enum\TransactionType;
 use App\Repository\TransactionRepository;
+use App\ValueObject\Period;
 use DateMalformedStringException;
 use DateTimeImmutable;
 
@@ -26,20 +27,18 @@ readonly class ReportService
     {
         $user = $this->userProvider->getUser();
 
-        $startDate = new DateTimeImmutable("$dto->year-$dto->month-01");
-        $endDate = $startDate->modify('last day of this month')->setTime(23, 59, 59);
+        $period = Period::forMonth($dto->year, $dto->month);
 
-        return $this->buildReport($user, $startDate, $endDate, $dto->categories, $dto->filterType);
+        return $this->buildReport($user, $period, $dto);
     }
 
     public function getYearlyReport(YearlyDto $dto): array
     {
         $user = $this->userProvider->getUser();
 
-        $startDate = new DateTimeImmutable("$dto->year-01-01");
-        $endDate = new DateTimeImmutable("$dto->year-12-31 23:59:59");
+        $period = Period::forYear($dto->year);
 
-        return $this->buildReport($user, $startDate, $endDate,  $dto->categories, $dto->filterType);
+        return $this->buildReport($user, $period, $dto);
     }
 
     /**
@@ -49,47 +48,43 @@ readonly class ReportService
     {
         $user = $this->userProvider->getUser();
 
-        $now = new DateTimeImmutable();
-        $startDate = $now->modify('monday this week')->setTime(0, 0);
-        $endDate = $now->modify('sunday this week')->setTime(23, 59, 59);
+        $period = Period::forWeek();
 
-        return $this->buildReport($user, $startDate, $endDate, $dto->categories, $dto->filterType);
+        return $this->buildReport($user, $period, $dto);
     }
 
     public function getDailyReport(ReportFilterDto $dto): array
     {
         $user = $this->userProvider->getUser();
 
-        $startDate = new DateTimeImmutable('today 00:00:00');
-        $endDate = new DateTimeImmutable('today 23:59:59');
+        $period = Period::forDay();
 
-        return $this->buildReport($user, $startDate, $endDate, $dto->categories, $dto->filterType);
+        return $this->buildReport($user, $period, $dto);
     }
 
     public function getAllTimeReport(ReportFilterDto $dto): array
     {
         $user = $this->userProvider->getUser();
 
-        return $this->buildReport($user, null, null, $dto->categories, $dto->filterType);
+        $period = Period::allTime();
+
+        return $this->buildReport($user, $period, $dto);
     }
 
     private function buildReport(
         User $user,
-        ?DateTimeImmutable $startDate,
-        ?DateTimeImmutable $endDate,
-        ?array $categories,
-        ?TransactionType $filterType
+        Period $period,
+        ReportFilterDto $dto,
     ): array
     {
-
-        $expenses = $this->getTotal($user, TransactionType::EXPENSE, $startDate, $endDate, $categories, $filterType);
-        $income = $this->getTotal($user, TransactionType::INCOME, $startDate, $endDate, $categories, $filterType);
+        $expenses = $this->getTotal($user, TransactionType::EXPENSE, $period, $dto);
+        $income = $this->getTotal($user, TransactionType::INCOME, $period, $dto);
 
         return [
-            'startDate' => $startDate?->format('Y-m-d'),
-            'endDate' => $endDate?->format('Y-m-d'),
-            'categories' => $categories ? array_map(fn(Category $c) => $c->getName(), $categories) : null,
-            'filterType' => $filterType?->value,
+            'startDate' => $period->getStartDate()?->format('Y-m-d'),
+            'endDate' => $period->getEndDate()?->format('Y-m-d'),
+            'categories' => $dto->categories ? array_map(fn(Category $c) => $c->getName(), $dto->categories) : null,
+            'filterType' => $dto->filterType?->value,
             'totalExpenses' => $expenses,
             'totalIncome' => $income,
             'netBalance' => $income - $expenses,
@@ -99,16 +94,14 @@ readonly class ReportService
     private function getTotal(
         User $user,
         TransactionType $type,
-        ?DateTimeImmutable $startDate,
-        ?DateTimeImmutable $endDate,
-        ?array $categories,
-        ?TransactionType $filterType
+        Period $period,
+        ReportFilterDto $dto,
     ): float
     {
-        if ($filterType !== null && $filterType !== $type) {
+        if ($dto->filterType !== null && $dto->filterType !== $type) {
             return 0.0;
         }
 
-        return $this->transactionRepository->getTotalByPeriodAndType($user, $type, $startDate, $endDate, $categories);
+        return $this->transactionRepository->getTotalByPeriodAndType($user, $type, $period, $dto->categories);
     }
 }

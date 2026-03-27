@@ -4,23 +4,29 @@ framework:
             policy: 'sliding_window'
             limit: 5
             interval: '10 minute'
+            storage_service: cache.rate_limiter
+
 
         api_refresh:
             policy: 'sliding_window'
             limit: 30
             interval: '15 minute'
+            storage_service: cache.rate_limiter
 
         api_read:
             policy: sliding_window
             limit: 100
             interval: '1 minute'
+            storage_service: cache.rate_limiter
 
         api_write:
             policy: sliding_window
             limit: 30
             interval: '1 minute'
+            storage_service: cache.rate_limiter
 
         api_reports:
             policy: 'sliding_window'
             limit: 20
             interval: '1 minute'
+            storage_service: cache.rate_limiter

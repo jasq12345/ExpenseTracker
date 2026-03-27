@@ -41,6 +41,7 @@ services:
             $apiRefreshLimiter: '@limiter.api_refresh'
         tags:
             - { name: kernel.event_listener, event: kernel.request }
+            - { name: kernel.event_listener, event: kernel.response, method: onKernelResponse }
 
     App\Service\NotificationServiceInterface:
         alias: App\Service\LoggerNotificationService

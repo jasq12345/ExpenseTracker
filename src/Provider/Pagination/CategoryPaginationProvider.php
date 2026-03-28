@@ -5,6 +5,7 @@ namespace App\Provider\Pagination;
 use App\Dto\Pagination\PaginationDto;
 use App\Entity\User;
 use App\Repository\CategoryRepository;
+use DomainException;
 
 readonly class CategoryPaginationProvider implements PaginatedProviderInterface
 {
@@ -15,7 +16,12 @@ readonly class CategoryPaginationProvider implements PaginatedProviderInterface
 
     public function items(User $user, PaginationDto $dto): array
     {
-        return $this->repository->listByUser($user, $dto);
+        $categories = $this->repository->listByUser($user, $dto);
+
+        if(!$categories){
+            throw new DomainException('No budgets found.');
+        }
+        return $categories;
     }
 
     public function total(user $user): int

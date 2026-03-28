@@ -5,6 +5,7 @@ namespace App\Provider\Pagination;
 use App\Dto\Pagination\PaginationDto;
 use App\Entity\User;
 use App\Repository\TransactionRepository;
+use DomainException;
 
 readonly class TransactionPaginationProvider implements PaginatedProviderInterface
 {
@@ -13,7 +14,13 @@ readonly class TransactionPaginationProvider implements PaginatedProviderInterfa
     ) {}
     public function items(User $user, PaginationDto $dto): array
     {
-        return $this->repository->listByUser($user, $dto);
+        $categories = $this->repository->listByUser($user, $dto);
+
+        if(!$categories){
+            throw new DomainException('No transactions found.');
+        }
+
+        return $categories;
     }
 
     public function total(user $user): int

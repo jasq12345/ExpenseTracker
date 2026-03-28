@@ -19,7 +19,7 @@ readonly class CategoryPaginationProvider implements PaginatedProviderInterface
         $categories = $this->repository->listByUser($user, $dto);
 
         if(!$categories){
-            throw new DomainException('No budgets found.');
+            throw new DomainException('No categories found.');
         }
         return $categories;
     }

@@ -14,13 +14,13 @@ readonly class TransactionPaginationProvider implements PaginatedProviderInterfa
     ) {}
     public function items(User $user, PaginationDto $dto): array
     {
-        $categories = $this->repository->listByUser($user, $dto);
+        $transactions = $this->repository->listByUser($user, $dto);
 
-        if(!$categories){
+        if(!$transactions){
             throw new DomainException('No transactions found.');
         }
 
-        return $categories;
+        return $transactions;
     }
 
     public function total(user $user): int

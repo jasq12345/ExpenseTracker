@@ -16,7 +16,7 @@ readonly class BudgetPaginationProvider implements PaginatedProviderInterface
     {
         $budgets = $this->repository->listByUser($user, $dto);
 
-        if(!$budgets){
+        if (!$budgets) {
             throw new DomainException('No budgets found.');
         }
         return $budgets;

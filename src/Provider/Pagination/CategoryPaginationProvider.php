@@ -5,6 +5,7 @@ namespace App\Provider\Pagination;
 use App\Dto\Pagination\PaginationDto;
 use App\Entity\User;
 use App\Repository\CategoryRepository;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 readonly class CategoryPaginationProvider implements PaginatedProviderInterface
 {
@@ -14,11 +15,19 @@ readonly class CategoryPaginationProvider implements PaginatedProviderInterface
 
     public function items(User $user, PaginationDto $dto): array
     {
-        return $this->repository->listByUser($user, $dto);
+        try {
+            return $this->repository->listByUser($user, $dto);
+        } catch (\Throwable $e) {
+            throw new NotFoundHttpException($e->getMessage(), $e);
+        }
     }
 
-    public function total(user $user): int
+    public function total(User $user): int
     {
-        return $this->repository->countByUser($user);
+        try {
+            return $this->repository->countByUser($user);
+        } catch (\Throwable $e) {
+            throw new NotFoundHttpException($e->getMessage(), $e);
+        }
     }
 }

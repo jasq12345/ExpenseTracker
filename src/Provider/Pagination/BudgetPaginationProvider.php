@@ -5,21 +5,16 @@ namespace App\Provider\Pagination;
 use App\Dto\Pagination\PaginationDto;
 use App\Entity\User;
 use App\Repository\BudgetRepository;
-use DomainException;
 
 readonly class BudgetPaginationProvider implements PaginatedProviderInterface
 {
     public function __construct(
         private BudgetRepository $repository,
     ) {}
+
     public function items(User $user, PaginationDto $dto): array
     {
-        $budgets = $this->repository->listByUser($user, $dto);
-
-        if (!$budgets) {
-            throw new DomainException('No budgets found.');
-        }
-        return $budgets;
+        return $this->repository->listByUser($user, $dto);
     }
 
     public function total(user $user): int

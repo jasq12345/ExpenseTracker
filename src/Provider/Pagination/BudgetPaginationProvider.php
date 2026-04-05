@@ -6,6 +6,7 @@ use App\Dto\Pagination\PaginationDto;
 use App\Entity\User;
 use App\Repository\BudgetRepository;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Throwable;
 
 readonly class BudgetPaginationProvider implements PaginatedProviderInterface
 {
@@ -17,7 +18,7 @@ readonly class BudgetPaginationProvider implements PaginatedProviderInterface
     {
         try {
             return $this->repository->listByUser($user, $dto);
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             throw new NotFoundHttpException($e->getMessage(), $e);
         }
     }
@@ -26,7 +27,7 @@ readonly class BudgetPaginationProvider implements PaginatedProviderInterface
     {
         try {
             return $this->repository->countByUser($user);
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             throw new NotFoundHttpException($e->getMessage(), $e);
         }
     }

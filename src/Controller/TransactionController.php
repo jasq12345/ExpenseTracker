@@ -43,6 +43,11 @@ final class TransactionController extends AbstractController
     {
         $transaction = $repository->find($id);
 
+        if(!$transaction)
+        {
+            throw $this->createNotFoundException();
+        }
+
         return $this->json(
             $transaction,
             Response::HTTP_OK,

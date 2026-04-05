@@ -46,6 +46,11 @@ class BudgetController extends AbstractController
     {
         $budget = $repository->find($id);
 
+        if(!$budget)
+        {
+            throw $this->createNotFoundException();
+        }
+
         return $this->json(
             $budget,
             Response::HTTP_OK,

@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Dto\Pagination\PaginationDto;
 use App\Dto\Transaction\CreateTransactionDto;
+use App\Dto\Transaction\ListTransactionDto;
 use App\Dto\Transaction\UpdateTransactionDto;
 use App\Provider\Pagination\TransactionPaginationProvider;
 use App\Repository\TransactionRepository;
@@ -22,7 +23,7 @@ final class TransactionController extends AbstractController
 {
     #[Route('/', name: 'app_transaction_list', methods: ['GET'])]
     public function list(
-        #[MapQueryString] PaginationDto $dto,
+        #[MapQueryString] ListTransactionDto $dto,
         UserProviderService $providerService,
         PaginationResponseBuilderService $builder,
         TransactionPaginationProvider $provider,

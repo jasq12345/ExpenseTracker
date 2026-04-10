@@ -3,6 +3,7 @@
 namespace App\Provider\Pagination;
 
 use App\Dto\Pagination\PaginationDto;
+use App\Dto\Transaction\ListTransactionDto;
 use App\Entity\User;
 use App\Repository\TransactionRepository;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -13,7 +14,7 @@ readonly class TransactionPaginationProvider implements PaginatedProviderInterfa
         private TransactionRepository $repository,
     ) {}
 
-    public function items(User $user, PaginationDto $dto): array
+    public function items(User $user, ListTransactionDto $dto): array
     {
         try {
             return $this->repository->listByUser($user, $dto);

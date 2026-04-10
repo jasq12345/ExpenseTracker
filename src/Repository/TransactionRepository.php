@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Dto\Pagination\PaginationDto;
+use App\Dto\Transaction\ListTransactionDto;
 use App\Entity\Category;
 use App\Entity\Transaction;
 use App\Entity\User;
@@ -77,7 +78,7 @@ class TransactionRepository extends ServiceEntityRepository
         return (float) $qb->getQuery()->getSingleScalarResult();
     }
 
-    public function listByUser(User $user, PaginationDto $dto): array
+    public function listByUser(User $user, ListTransactionDto $dto): array
     {
         return $this->createQueryBuilder('t')
             ->andWhere('t.user = :user')

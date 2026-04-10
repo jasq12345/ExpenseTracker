@@ -2,7 +2,6 @@
 
 namespace App\Controller;
 
-use App\Dto\Pagination\PaginationDto;
 use App\Dto\Transaction\CreateTransactionDto;
 use App\Dto\Transaction\ListTransactionDto;
 use App\Dto\Transaction\UpdateTransactionDto;

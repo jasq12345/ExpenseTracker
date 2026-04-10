@@ -7,7 +7,7 @@ use App\Entity\User;
 use App\Repository\CategoryRepository;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
-readonly class CategoryPaginationProvider implements PaginatedProviderInterface
+readonly class CategoryPaginationProvider
 {
     public function __construct(
         private readonly CategoryRepository $repository,

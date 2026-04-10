@@ -8,7 +8,7 @@ use App\Repository\BudgetRepository;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Throwable;
 
-readonly class BudgetPaginationProvider implements PaginatedProviderInterface
+readonly class BudgetPaginationProvider
 {
     public function __construct(
         private BudgetRepository $repository,

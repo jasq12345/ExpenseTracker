@@ -80,14 +80,44 @@ class TransactionRepository extends ServiceEntityRepository
 
     public function listByUser(User $user, ListTransactionDto $dto): array
     {
-        return $this->createQueryBuilder('t')
-            ->andWhere('t.user = :user')
+        $qb = $this->createQueryBuilder('t');
+
+        $qb->andWhere('t.user = :user')
             ->setParameter('user', $user)
             ->orderBy('t.createdAt', 'DESC')
             ->setFirstResult(($dto->page - 1) * $dto->limit)
-            ->setMaxResults($dto->limit)
-            ->getQuery()
-            ->getResult();
+            ->setMaxResults($dto->limit);
+
+        if($dto->categories)
+        {
+            $qb->andWhere('t.category IN (:categories)')
+                ->setParameter('categories', $dto->categories);
+        }
+        if($dto->type)
+        {
+            $qb->andWhere('t.type = :type')
+                ->setParameter('type', $dto->type);
+        }
+
+        if($dto->name)
+        {
+            $qb->andWhere('t.name LIKE :name')
+                ->setParameter('name', '%' . $dto->name . '%');
+        }
+
+        if($dto->minPrice)
+        {
+            $qb->andWhere('t.price >= :minPrice')
+                ->setParameter('minPrice', $dto->minPrice);
+        }
+
+        if($dto->maxPrice)
+        {
+            $qb->andWhere('t.price <= :maxPrice')
+                ->setParameter('maxPrice', $dto->maxPrice);
+        }
+
+        return $qb->getQuery()->getResult();
     }
 
     public function countByUser(User $user): int

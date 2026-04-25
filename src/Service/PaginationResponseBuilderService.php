@@ -10,7 +10,7 @@ readonly final class PaginationResponseBuilderService
 {
     public function build(
         PaginationDto $dto,
-        PaginatedProviderInterface $provider,
+         $provider,
         User $user,
     ): array
     {

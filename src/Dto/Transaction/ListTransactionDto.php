@@ -2,14 +2,14 @@
 
 namespace App\Dto\Transaction;
 
+use App\Dto\Pagination\PaginatedDtoInterface;
 use App\Dto\Pagination\PaginationDto;
 use App\Enum\TransactionType;
 
-readonly class ListTransactionDto extends PaginationDto
+readonly class ListTransactionDto implements PaginatedDtoInterface
 {
     public function __construct(
-        int $page = 1,
-        int $limit = 10,
+        public PaginationDto $pagination,
         public ?array $categories = null,
         public ?string $name = null,
 
@@ -18,7 +18,10 @@ readonly class ListTransactionDto extends PaginationDto
         public ?int $maxPrice = null,
 
         public ?TransactionType $type = null,
-    ) {
-        parent::__construct($page, $limit);
+    ){}
+
+    public function pagination(): PaginationDto
+    {
+        return $this->pagination;
     }
 }

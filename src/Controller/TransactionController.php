@@ -39,7 +39,10 @@ final class TransactionController extends AbstractController
     }
 
     #[Route('/{id}', name: 'app_transaction_show', requirements: ['id' => '\d+'], methods: ['GET'])]
-    public function show(TransactionRepository $repository, int $id): JsonResponse
+    public function show(
+        TransactionRepository $repository,
+        int $id
+    ): JsonResponse
     {
         $transaction = $repository->find($id);
 

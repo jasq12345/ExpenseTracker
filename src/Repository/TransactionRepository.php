@@ -24,27 +24,6 @@ class TransactionRepository extends ServiceEntityRepository
         parent::__construct($registry, Transaction::class);
     }
 
-//    public function findByPeriod(User $user, ?DateTimeImmutable $start, ?DateTimeImmutable $end): array
-//    {
-//        $qb = $this->createQueryBuilder('t');
-//
-//        $qb->andWhere($qb->expr()->eq('t.user', ':user'))
-//            ->setParameter('user', $user)
-//            ->orderBy('t.createdAt', 'DESC');
-//
-//        if ($start !== null) {
-//            $qb->andWhere($qb->expr()->gte('t.createdAt', ':start'))
-//                ->setParameter('start', $start);
-//        }
-//
-//        if ($end !== null) {
-//            $qb->andWhere($qb->expr()->lte('t.createdAt', ':end'))
-//                ->setParameter('end', $end);
-//        }
-//
-//        return $qb->getQuery()->getResult();
-//    }
-
     public function getTotalByPeriodAndType(
         User $user,
         TransactionType $type,

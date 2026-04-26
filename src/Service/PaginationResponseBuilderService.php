@@ -2,15 +2,15 @@
 
 namespace App\Service;
 
-use App\Dto\Pagination\PaginationDto;
+use App\Dto\Pagination\PaginatedDtoInterface;
 use App\Entity\User;
 use App\Provider\Pagination\PaginatedProviderInterface;
 
 readonly final class PaginationResponseBuilderService
 {
     public function build(
-        PaginationDto $dto,
-         $provider,
+        PaginatedDtoInterface $dto,
+        PaginatedProviderInterface $provider,
         User $user,
     ): array
     {

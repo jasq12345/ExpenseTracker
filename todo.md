@@ -1,47 +1,14 @@
-You’re running into a **classic typing problem**:
+# TODO
 
-> Your `PaginationResponseBuilderService` wants one common provider interface, but each provider may need a different DTO once filters are added.
+This file is reserved for short, actionable project tasks only.
+Detailed design discussions, architecture notes, and code-sample-heavy writeups
+should be moved to dedicated documentation (for example, `docs/` or an ADR)
+instead of being kept here as transient notes.
 
-For example:
+## Current action
 
-```php
-public function items(User $user, PaginationDto $dto): array
-```
-
-
-works while everything only needs pagination.
-
-But once `TransactionPaginationProvider` needs something like:
-
-```php
-ListTransactionDto $dto
-```
-
-
-then this kind of interface becomes hard:
-
-```php
-interface PaginatedProviderInterface
-{
-    public function items(User $user, PaginationDto $dto): array;
-}
-```
-
-
-Because `ListTransactionDto` is **not** a `PaginationDto`.
-
-The clean solution is: **don’t make the provider depend directly on `PaginationDto`. Make list/filter DTOs expose pagination.**
-
----
-
-## Recommended structure
-
-Create a small interface for DTOs that contain pagination:
-
-```php
-<?php
-
-namespace App\Dto\Pagination;
+- Move pagination/provider design rationale into formal project documentation if it
+  still needs to be retained.
 
 interface PaginatedDtoInterface
 {

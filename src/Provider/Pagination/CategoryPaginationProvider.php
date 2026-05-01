@@ -2,9 +2,11 @@
 
 namespace App\Provider\Pagination;
 
-use App\Dto\Pagination\PaginationDto;
+use App\Dto\Category\ListCategoryDto;
+use App\Dto\Pagination\PaginatedDtoInterface;
 use App\Entity\User;
 use App\Repository\CategoryRepository;
+use InvalidArgumentException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 readonly class CategoryPaginationProvider implements PaginatedProviderInterface
@@ -13,8 +15,11 @@ readonly class CategoryPaginationProvider implements PaginatedProviderInterface
         private readonly CategoryRepository $repository,
     ) {}
 
-    public function items(User $user, PaginationDto $dto): array
+    public function items(User $user, PaginatedDtoInterface $dto): array
     {
+        if (!$dto instanceof ListCategoryDto) {
+            throw new InvalidArgumentException('Expected ListTransactionDto.');
+        }
         try {
             return $this->repository->listByUser($user, $dto);
         } catch (\Throwable $e) {
@@ -22,7 +27,7 @@ readonly class CategoryPaginationProvider implements PaginatedProviderInterface
         }
     }
 
-    public function total(User $user): int
+    public function total(User $user, PaginatedDtoInterface $dto): int
     {
         try {
             return $this->repository->countByUser($user);

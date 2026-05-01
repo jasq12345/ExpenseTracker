@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use App\Dto\Category\ListCategoryDto;
 use App\Dto\Pagination\PaginationDto;
 use App\Entity\Category;
 use App\Entity\User;
@@ -32,7 +33,7 @@ class CategoryRepository extends ServiceEntityRepository
         ]);
     }
 
-    public function listByUser(User $user, PaginationDto $dto): array
+    public function listByUser(User $user, ListCategoryDto $dto): array
     {
         return $this->createQueryBuilder('c')
             ->andWhere('c.user = :user')

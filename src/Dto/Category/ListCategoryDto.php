@@ -16,6 +16,9 @@ readonly class ListCategoryDto implements PaginatedDtoInterface
         #[PaginationLimit]
         public int $limit = 10,
 
+        public ?string $name,
+        public ?string $color,
+        public ?string $icon,
 
     ) {}
 

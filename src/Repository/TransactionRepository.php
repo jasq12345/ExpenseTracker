@@ -86,20 +86,20 @@ class TransactionRepository extends ServiceEntityRepository
 
         if($dto->minPrice)
         {
-            $qb->andWhere('t.price >= :minPrice')
+            $qb->andWhere('t.price * t.amount >= :minPrice')
                 ->setParameter('minPrice', $dto->minPrice);
         }
 
         if($dto->maxPrice)
         {
-            $qb->andWhere('t.price <= :maxPrice')
+            $qb->andWhere('t.price * t.amount <= :maxPrice')
                 ->setParameter('maxPrice', $dto->maxPrice);
         }
 
         return $qb->getQuery()->getResult();
     }
 
-    public function countByUser(User $user): int
+    public function countByUser(User $user, ListTransactionDto $dto): int
     {
         return $this->createQueryBuilder('t')
             ->select('COUNT(t.id)')

@@ -3,8 +3,8 @@
 namespace App\Controller;
 
 use App\Dto\Category\CreateCategoryDto;
+use App\Dto\Category\ListCategoryDto;
 use App\Dto\Category\UpdateCategoryDto;
-use App\Dto\Pagination\PaginationDto;
 use App\Provider\Pagination\CategoryPaginationProvider;
 use App\Repository\CategoryRepository;
 use App\Service\CategoryService;
@@ -22,7 +22,7 @@ class CategoryController extends AbstractController
 {
     #[Route('/', name: 'app_category_list', methods: ['GET'])]
     public function list(
-        #[MapQueryString] PaginationDto $dto,
+        #[MapQueryString] ListCategoryDto $dto,
         UserProviderService $providerService,
         PaginationResponseBuilderService $builder,
         CategoryPaginationProvider $provider,

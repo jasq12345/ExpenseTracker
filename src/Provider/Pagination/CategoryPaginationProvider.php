@@ -20,6 +20,7 @@ readonly class CategoryPaginationProvider implements PaginatedProviderInterface
         if (!$dto instanceof ListCategoryDto) {
             throw new InvalidArgumentException('Expected ListTransactionDto.');
         }
+
         try {
             return $this->repository->listByUser($user, $dto);
         } catch (\Throwable $e) {
@@ -29,6 +30,10 @@ readonly class CategoryPaginationProvider implements PaginatedProviderInterface
 
     public function total(User $user, PaginatedDtoInterface $dto): int
     {
+        if (!$dto instanceof ListCategoryDto) {
+            throw new InvalidArgumentException('Expected ListTransactionDto.');
+        }
+
         try {
             return $this->repository->countByUser($user);
         } catch (\Throwable $e) {

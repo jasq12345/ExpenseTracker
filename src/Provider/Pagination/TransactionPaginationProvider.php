@@ -30,8 +30,12 @@ readonly class TransactionPaginationProvider implements PaginatedProviderInterfa
 
     public function total(User $user, PaginatedDtoInterface $dto): int
     {
+        if (!$dto instanceof ListTransactionDto) {
+            throw new InvalidArgumentException('Expected ListTransactionDto.');
+        }
+
         try {
-            return $this->repository->countByUser($user);
+            return $this->repository->countByUser($user, $dto);
         } catch (\Throwable $e) {
             throw new NotFoundHttpException($e->getMessage(), $e);
         }

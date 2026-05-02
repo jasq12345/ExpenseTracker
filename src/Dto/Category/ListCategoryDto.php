@@ -19,7 +19,6 @@ readonly class ListCategoryDto implements PaginatedDtoInterface
         public ?string $name,
         public ?string $color,
         public ?string $icon,
-
     ) {}
 
     public function pagination(): PaginationDto

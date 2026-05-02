@@ -35,14 +35,28 @@ class CategoryRepository extends ServiceEntityRepository
 
     public function listByUser(User $user, ListCategoryDto $dto): array
     {
-        return $this->createQueryBuilder('c')
+        $qb =  $this->createQueryBuilder('c')
             ->andWhere('c.user = :user')
             ->setParameter('user', $user)
-            ->orderBy('c.name', 'ASC')
             ->setFirstResult(($dto->page - 1) * $dto->limit)
-            ->setMaxResults($dto->limit)
-            ->getQuery()
-            ->getResult();
+            ->setMaxResults($dto->limit);
+
+        if($dto->name){
+            $qb->andWhere('c.name LIKE :name')
+                ->setParameter('name', '%' . $dto->name . '%');
+        }
+
+        if($dto->color){
+            $qb->andWhere('c.color = :color')
+                ->setParameter('color', $dto->color);
+        }
+
+        if($dto->icon){
+            $qb->andWhere('c.icon = :icon')
+                ->setParameter('icon', $dto->icon);
+        }
+
+        return $qb->getQuery()->getResult();
     }
 
     public function countByUser(User $user): int

@@ -12,6 +12,7 @@ use App\ValueObject\Period;
 use DateTime;
 use DateTimeImmutable;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -59,53 +60,54 @@ class TransactionRepository extends ServiceEntityRepository
 
     public function listByUser(User $user, ListTransactionDto $dto): array
     {
-        $qb = $this->createQueryBuilder('t');
-
-        $qb->andWhere('t.user = :user')
+        $qb = $this->createQueryBuilder('t')
+            ->andWhere('t.user = :user')
             ->setParameter('user', $user)
             ->orderBy('t.createdAt', 'DESC')
             ->setFirstResult(($dto->page - 1) * $dto->limit)
             ->setMaxResults($dto->limit);
 
-        if($dto->categories)
-        {
-            $qb->andWhere('t.category IN (:categories)')
-                ->setParameter('categories', $dto->categories);
-        }
-        if($dto->type)
-        {
-            $qb->andWhere('t.type = :type')
-                ->setParameter('type', $dto->type);
-        }
-
-        if($dto->name)
-        {
-            $qb->andWhere('t.name LIKE :name')
-                ->setParameter('name', '%' . $dto->name . '%');
-        }
-
-        if($dto->minPrice)
-        {
-            $qb->andWhere('t.price * t.amount >= :minPrice')
-                ->setParameter('minPrice', $dto->minPrice);
-        }
-
-        if($dto->maxPrice)
-        {
-            $qb->andWhere('t.price * t.amount <= :maxPrice')
-                ->setParameter('maxPrice', $dto->maxPrice);
-        }
+        $this->applyDtoFilters($dto, $qb);
 
         return $qb->getQuery()->getResult();
     }
 
     public function countByUser(User $user, ListTransactionDto $dto): int
     {
-        return $this->createQueryBuilder('t')
+        $qb =  $this->createQueryBuilder('t')
             ->select('COUNT(t.id)')
             ->andWhere('t.user = :user')
-            ->setParameter('user', $user)
-            ->getQuery()
-            ->getSingleScalarResult();
+            ->setParameter('user', $user);
+
+        $this->applyDtoFilters($dto, $qb);
+        return $qb->getQuery()->getSingleScalarResult();
+    }
+
+
+    private function applyDtoFilters(ListTransactionDto $dto, QueryBuilder $qb): void
+    {
+        if ($dto->categories) {
+            $qb->andWhere('t.category IN (:categories)')
+                ->setParameter('categories', $dto->categories);
+        }
+        if ($dto->type) {
+            $qb->andWhere('t.type = :type')
+                ->setParameter('type', $dto->type);
+        }
+
+        if ($dto->name) {
+            $qb->andWhere('t.name LIKE :name')
+                ->setParameter('name', '%' . $dto->name . '%');
+        }
+
+        if ($dto->minPrice) {
+            $qb->andWhere('t.price * t.amount >= :minPrice')
+                ->setParameter('minPrice', $dto->minPrice);
+        }
+
+        if ($dto->maxPrice) {
+            $qb->andWhere('t.price * t.amount <= :maxPrice')
+                ->setParameter('maxPrice', $dto->maxPrice);
+        }
     }
 }

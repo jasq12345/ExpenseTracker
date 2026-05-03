@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use App\Dto\Budget\ListBudgetDto;
 use App\Dto\Pagination\PaginationDto;
 use App\Entity\Budget;
 use App\Entity\User;
@@ -54,7 +55,7 @@ class BudgetRepository extends ServiceEntityRepository
     /**
      * @return Budget[]
      */
-    public function listByUser(User $user, PaginationDto $dto): array
+    public function listByUser(User $user, ListBudgetDto $dto): array
     {
         return $this->createQueryBuilder('b')
             ->andWhere('b.user = :user')

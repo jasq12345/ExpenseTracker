@@ -15,7 +15,7 @@ readonly final class PaginationResponseBuilderService
     ): array
     {
         $items = $provider->items($user, $dto);
-        $totalItems = $provider->total($user);
+        $totalItems = $provider->total($user, $dto);
         $totalPages = ceil($totalItems / $dto->limit);
 
         $hasPrev = $dto->page > 1;

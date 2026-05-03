@@ -4,6 +4,9 @@ namespace App\Dto\Category;
 
 use App\Dto\Pagination\PaginatedDtoInterface;
 use App\Dto\Pagination\PaginationDto;
+use App\Validator\Constraint\Category\CategoryColor;
+use App\Validator\Constraint\Category\CategoryIcon;
+use App\Validator\Constraint\Category\CategoryName;
 use App\Validator\Constraint\Pagination\PaginationLimit;
 use App\Validator\Constraint\Pagination\PaginationPage;
 
@@ -16,9 +19,14 @@ readonly class ListCategoryDto implements PaginatedDtoInterface
         #[PaginationLimit]
         public int $limit = 10,
 
-        public ?string $name,
-        public ?string $color,
-        public ?string $icon,
+        #[CategoryName]
+        public ?string $name = null,
+
+        #[CategoryColor]
+        public ?string $color = null,
+
+        #[CategoryIcon]
+        public ?string $icon = null,
     ) {}
 
     public function pagination(): PaginationDto

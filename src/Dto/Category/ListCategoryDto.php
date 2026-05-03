@@ -4,6 +4,7 @@ namespace App\Dto\Category;
 
 use App\Dto\Pagination\PaginatedDtoInterface;
 use App\Dto\Pagination\PaginationDto;
+use App\Enum\DtoOrderEnum;
 use App\Validator\Constraint\Category\CategoryColor;
 use App\Validator\Constraint\Category\CategoryIcon;
 use App\Validator\Constraint\Category\CategoryName;
@@ -27,6 +28,8 @@ readonly class ListCategoryDto implements PaginatedDtoInterface
 
         #[CategoryIcon]
         public ?string $icon = null,
+
+        public DtoOrderEnum $orderBy = DtoOrderEnum::DESC,
     ) {}
 
     public function pagination(): PaginationDto

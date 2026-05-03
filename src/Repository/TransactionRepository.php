@@ -63,7 +63,7 @@ class TransactionRepository extends ServiceEntityRepository
         $qb = $this->createQueryBuilder('t')
             ->andWhere('t.user = :user')
             ->setParameter('user', $user)
-            ->orderBy('t.createdAt', 'DESC')
+            ->orderBy('t.createdAt', $dto->orderBy->toString())
             ->setFirstResult(($dto->page - 1) * $dto->limit)
             ->setMaxResults($dto->limit);
 

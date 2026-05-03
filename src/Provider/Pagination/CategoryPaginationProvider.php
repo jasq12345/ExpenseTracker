@@ -35,7 +35,7 @@ readonly class CategoryPaginationProvider implements PaginatedProviderInterface
         }
 
         try {
-            return $this->repository->countByUser($user);
+            return $this->repository->countByUser($user, $dto);
         } catch (\Throwable $e) {
             throw new NotFoundHttpException($e->getMessage(), $e);
         }

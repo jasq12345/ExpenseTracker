@@ -4,6 +4,7 @@ namespace App\Dto\Transaction;
 
 use App\Dto\Pagination\PaginatedDtoInterface;
 use App\Dto\Pagination\PaginationDto;
+use App\Enum\DtoOrderEnum;
 use App\Enum\TransactionType;
 use App\Validator\Constraint\Pagination\PaginationLimit;
 use App\Validator\Constraint\Pagination\PaginationPage;
@@ -27,6 +28,7 @@ readonly class ListTransactionDto implements PaginatedDtoInterface
         public ?int $maxPrice = null,
 
         public ?TransactionType $type = null,
+        public DtoOrderEnum $orderBy = DtoOrderEnum::DESC,
     ) {}
 
     public function pagination(): PaginationDto

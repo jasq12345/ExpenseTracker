@@ -7,6 +7,7 @@ use App\Dto\Pagination\PaginationDto;
 use App\Entity\Category;
 use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 use DomainException;
 
@@ -41,8 +42,15 @@ class CategoryRepository extends ServiceEntityRepository
             ->setFirstResult(($dto->page - 1) * $dto->limit)
             ->setMaxResults($dto->limit);
 
+        $this->applyDtoFilters($dto, $qb);
+
+        return $qb->getQuery()->getResult();
+    }
+    private function applyDtoFilters(ListCategoryDto $dto, QueryBuilder $qb): void
+    {
         if($dto->name){
             $qb->andWhere('c.name LIKE :name')
+                ->orderBy('c.name', $dto->orderBy->toString())
                 ->setParameter('name', '%' . $dto->name . '%');
         }
 
@@ -55,17 +63,17 @@ class CategoryRepository extends ServiceEntityRepository
             $qb->andWhere('c.icon = :icon')
                 ->setParameter('icon', $dto->icon);
         }
-
-        return $qb->getQuery()->getResult();
     }
 
-    public function countByUser(User $user): int
+    public function countByUser(User $user, ListCategoryDto $dto): int
     {
-        return $this->createQueryBuilder('c')
+        $qb =  $this->createQueryBuilder('c')
             ->select('COUNT(c.id)')
             ->andWhere('c.user = :user')
-            ->setParameter('user', $user)
-            ->getQuery()
-            ->getSingleScalarResult();
+            ->setParameter('user', $user);
+
+        $this->applyDtoFilters($dto, $qb);
+
+        return $qb->getQuery()->getSingleScalarResult();
     }
 }

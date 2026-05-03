@@ -4,6 +4,7 @@ namespace App\Dto\Budget;
 
 use App\Dto\Pagination\PaginatedDtoInterface;
 use App\Dto\Pagination\PaginationDto;
+use App\Enum\DtoOrderEnum;
 use App\Validator\Constraint\Pagination\PaginationLimit;
 use App\Validator\Constraint\Pagination\PaginationPage;
 
@@ -16,6 +17,8 @@ class ListBudgetDto implements PaginatedDtoInterface
 
         #[PaginationLimit]
         public int $limit = 10,
+
+        public DtoOrderEnum $orderBy = DtoOrderEnum::DESC,
     ) {}
 
     public function pagination(): PaginationDto

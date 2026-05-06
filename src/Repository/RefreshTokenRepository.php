@@ -33,4 +33,14 @@ class RefreshTokenRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+
+   public function deleteExpiredTokens()
+   {
+       return $this->createQueryBuilder('t')
+           ->delete()
+           ->where('t.expiresAt < :now')
+           ->setParameter('now', new \DateTimeImmutable())
+           ->getQuery()
+           ->execute();
+   }
 }

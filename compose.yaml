@@ -5,10 +5,20 @@ services:
     container_name: php
     volumes:
       - ./:/var/www/html
-      # FIX: Mount to a new filename (xdebug-local.ini) so we don't overwrite the extension loader
       - ./docker/xdebug.ini:/usr/local/etc/php/conf.d/xdebug-local.ini
     extra_hosts:
       - "host.docker.internal:host-gateway"
+    depends_on:
+      - mysql
+      - redis
+
+  messenger-worker:
+    build: .
+    user: "${UID}:${GID}"
+    command: php bin/console messenger:consume scheduler_default --time-limit=3600
+    restart: unless-stopped
+    volumes:
+      - ./:/var/www/html
     depends_on:
       - mysql
       - redis
@@ -30,19 +40,6 @@ services:
     ports:
       - "6379:6379"
     command: ["redis-server", "--appendonly", "yes"]
-
-  phpmyadmin:
-    image: phpmyadmin:latest
-    container_name: phpmyadmin
-    environment:
-      PMA_HOST: mysql
-      PMA_USER: root
-      PMA_PASSWORD: root
-    ports:
-      - "8081:80"
-    depends_on:
-      mysql:
-        condition: service_healthy
 
   mysql:
     image: mysql:8.0
